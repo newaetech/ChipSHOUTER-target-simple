@@ -1,19 +1,19 @@
 /*_
-    This file is part of the ChipWhisperer Example Targets
-    Copyright (C) 2012-2017 NewAE Technology Inc.
+	This file is part of the ChipWhisperer Example Targets
+	Copyright (C) 2012-2017 NewAE Technology Inc.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "hal.h"
@@ -38,29 +38,29 @@ void delay500ms(int s);
 void glitch(void)
 {
 	volatile uint32_t i, j;
-    volatile uint32_t cnt;
-    
-    volatile uint32_t run_cnt = 0;
-    volatile uint32_t glitch_cnt = 0;
-    for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
+	volatile uint32_t cnt;
+	
+	volatile uint32_t run_cnt = 0;
+	volatile uint32_t glitch_cnt = 0;
+	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
 		//run led on
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
-        for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
-            for(j=0; j<INNER_LOOP_CNT; j++) {
-                cnt++;
-            }
-        }
-        
-        //run led off
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
-        for(; i < OUTER_LOOP_CNT; i++) {
-            for(j=0; j < INNER_LOOP_CNT; j++){
-                cnt++;
-            }
-        }
-        
-        //look for glitch
-        if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
+		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
+			for(j=0; j<INNER_LOOP_CNT; j++) {
+				cnt++;
+			}
+		}
+		
+		//run led off
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
+		for(; i < OUTER_LOOP_CNT; i++) {
+			for(j=0; j < INNER_LOOP_CNT; j++){
+				cnt++;
+			}
+		}
+		
+		//look for glitch
+		if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
 			//if glitched, reset the run count and blink the fault LED a few times
 			for (glitch_cnt = 0; glitch_cnt < GLITCH_CNT; glitch_cnt++) {
 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
