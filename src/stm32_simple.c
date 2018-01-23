@@ -23,16 +23,28 @@
 volatile uint8_t glitched = 0;
 void delay100ms(uint32_t s);
 
+//clock constants
+#define DIV_HSI_512 1
+
 //glitch() constants
 #define RUN_CNT 300
 #define GLITCH_CNT 3
 #define LED_DUTY_CYCLE 10
 
 #define OUTER_LOOP_CNT 100
+
+#ifdef DIV_HSI_512
+#define INNER_LOOP_CNT 9
+#else
 #define INNER_LOOP_CNT 5000
+#endif
 
 //delay500ms() constants
+#ifdef DIV_HSI_512
+#define BLINK_PERIOD 129
+#else
 #define BLINK_PERIOD 66000
+#endif
 
 //startup_blink() constants
 #define BLINK_TOT 3
@@ -103,12 +115,22 @@ void startup_blink(void)
 void osc_setup(void)
 {
 	RCC_OscInitTypeDef RCC_OscInitStruct;
-	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSI;
 	RCC_OscInitStruct.HSEState       = RCC_HSE_OFF;
 	RCC_OscInitStruct.HSIState       = RCC_HSI_ON;
 	RCC_OscInitStruct.PLL.PLLSource  = RCC_PLL_NONE;
 	RCC_OscInitStruct.LSIState		 = RCC_LSI_OFF;
 	HAL_RCC_OscConfig(&RCC_OscInitStruct);
+	
+	#ifdef DIV_HSI_512
+	//can't use LSI as system clock, but can divide HSI clock
+	RCC_ClkInitTypeDef clk;
+	clk.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK;
+	clk.AHBCLKDivider = RCC_SYSCLK_DIV512; //as slow as possible
+	clk.SYSCLKSource   = RCC_SYSCLKSOURCE_HSI;
+	uint32_t flash_latency = 5;
+	HAL_RCC_ClockConfig(&clk, flash_latency);
+	#endif
 }
 
 void power_setup(void)

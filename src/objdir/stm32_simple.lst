@@ -50,63 +50,75 @@
   23:stm32_simple.c **** volatile uint8_t glitched = 0;
   24:stm32_simple.c **** void delay100ms(uint32_t s);
   25:stm32_simple.c **** 
-  26:stm32_simple.c **** //glitch() constants
-  27:stm32_simple.c **** #define RUN_CNT 300
-  28:stm32_simple.c **** #define GLITCH_CNT 3
-  29:stm32_simple.c **** #define LED_DUTY_CYCLE 10
-  30:stm32_simple.c **** 
-  31:stm32_simple.c **** #define OUTER_LOOP_CNT 100
-  32:stm32_simple.c **** #define INNER_LOOP_CNT 5000
+  26:stm32_simple.c **** //clock constants
+  27:stm32_simple.c **** #define DIV_HSI_512 1
+  28:stm32_simple.c **** 
+  29:stm32_simple.c **** //glitch() constants
+  30:stm32_simple.c **** #define RUN_CNT 300
+  31:stm32_simple.c **** #define GLITCH_CNT 3
+  32:stm32_simple.c **** #define LED_DUTY_CYCLE 10
   33:stm32_simple.c **** 
-  34:stm32_simple.c **** //delay500ms() constants
-  35:stm32_simple.c **** #define BLINK_PERIOD 66000
-  36:stm32_simple.c **** 
-  37:stm32_simple.c **** //startup_blink() constants
-  38:stm32_simple.c **** #define BLINK_TOT 3
-  39:stm32_simple.c **** 
-  40:stm32_simple.c **** void glitch(void)
-  41:stm32_simple.c **** {
-  42:stm32_simple.c **** 	volatile uint32_t i, j;
-  43:stm32_simple.c **** 	volatile uint32_t cnt;
-  44:stm32_simple.c **** 	
-  45:stm32_simple.c **** 	volatile uint32_t run_cnt = 0;
-  46:stm32_simple.c **** 	volatile uint32_t glitch_cnt = 0;
-  47:stm32_simple.c **** 	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
-  48:stm32_simple.c **** 		//run led on
-  49:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
-  50:stm32_simple.c **** 		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
-  51:stm32_simple.c **** 			for(j=0; j<INNER_LOOP_CNT; j++) {
-  52:stm32_simple.c **** 				cnt++;
-  53:stm32_simple.c **** 			}
-  54:stm32_simple.c **** 		}
-  55:stm32_simple.c **** 		
-  56:stm32_simple.c **** 		//run led off
-  57:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
-  58:stm32_simple.c **** 		for(; i < OUTER_LOOP_CNT; i++) {
-  59:stm32_simple.c **** 			for(j=0; j < INNER_LOOP_CNT; j++){
-  60:stm32_simple.c **** 				cnt++;
-  61:stm32_simple.c **** 			}
-  62:stm32_simple.c **** 		}
-  63:stm32_simple.c **** 		
-  64:stm32_simple.c **** 		//look for glitch
-  65:stm32_simple.c **** 		if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
-  66:stm32_simple.c **** 			//if glitched, reset the run count and blink the fault LED a few times
-  67:stm32_simple.c **** 			for (glitch_cnt = 0; glitch_cnt < GLITCH_CNT; glitch_cnt++) {
-  68:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
-  69:stm32_simple.c **** 				delay100ms(5);
-  70:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
-  71:stm32_simple.c **** 				delay100ms(5);
-  72:stm32_simple.c **** 			}
-  73:stm32_simple.c **** 			
-  74:stm32_simple.c **** 			run_cnt = 0;
-  75:stm32_simple.c **** 		}
-  76:stm32_simple.c **** 	}
-  77:stm32_simple.c **** }
-  78:stm32_simple.c **** 
-  79:stm32_simple.c **** 
-  80:stm32_simple.c **** void delay100ms(uint32_t s)
-  81:stm32_simple.c **** {
-  29              		.loc 1 81 0
+  34:stm32_simple.c **** #define OUTER_LOOP_CNT 100
+  35:stm32_simple.c **** 
+  36:stm32_simple.c **** #ifdef DIV_HSI_512
+  37:stm32_simple.c **** #define INNER_LOOP_CNT 9
+  38:stm32_simple.c **** #else
+  39:stm32_simple.c **** #define INNER_LOOP_CNT 5000
+  40:stm32_simple.c **** #endif
+  41:stm32_simple.c **** 
+  42:stm32_simple.c **** //delay500ms() constants
+  43:stm32_simple.c **** #ifdef DIV_HSI_512
+  44:stm32_simple.c **** #define BLINK_PERIOD 129
+  45:stm32_simple.c **** #else
+  46:stm32_simple.c **** #define BLINK_PERIOD 66000
+  47:stm32_simple.c **** #endif
+  48:stm32_simple.c **** 
+  49:stm32_simple.c **** //startup_blink() constants
+  50:stm32_simple.c **** #define BLINK_TOT 3
+  51:stm32_simple.c **** 
+  52:stm32_simple.c **** void glitch(void)
+  53:stm32_simple.c **** {
+  54:stm32_simple.c **** 	volatile uint32_t i, j;
+  55:stm32_simple.c **** 	volatile uint32_t cnt;
+  56:stm32_simple.c **** 	
+  57:stm32_simple.c **** 	volatile uint32_t run_cnt = 0;
+  58:stm32_simple.c **** 	volatile uint32_t glitch_cnt = 0;
+  59:stm32_simple.c **** 	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
+  60:stm32_simple.c **** 		//run led on
+  61:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
+  62:stm32_simple.c **** 		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
+  63:stm32_simple.c **** 			for(j=0; j<INNER_LOOP_CNT; j++) {
+  64:stm32_simple.c **** 				cnt++;
+  65:stm32_simple.c **** 			}
+  66:stm32_simple.c **** 		}
+  67:stm32_simple.c **** 		
+  68:stm32_simple.c **** 		//run led off
+  69:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
+  70:stm32_simple.c **** 		for(; i < OUTER_LOOP_CNT; i++) {
+  71:stm32_simple.c **** 			for(j=0; j < INNER_LOOP_CNT; j++){
+  72:stm32_simple.c **** 				cnt++;
+  73:stm32_simple.c **** 			}
+  74:stm32_simple.c **** 		}
+  75:stm32_simple.c **** 		
+  76:stm32_simple.c **** 		//look for glitch
+  77:stm32_simple.c **** 		if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
+  78:stm32_simple.c **** 			//if glitched, reset the run count and blink the fault LED a few times
+  79:stm32_simple.c **** 			for (glitch_cnt = 0; glitch_cnt < GLITCH_CNT; glitch_cnt++) {
+  80:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
+  81:stm32_simple.c **** 				delay100ms(5);
+  82:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
+  83:stm32_simple.c **** 				delay100ms(5);
+  84:stm32_simple.c **** 			}
+  85:stm32_simple.c **** 			
+  86:stm32_simple.c **** 			run_cnt = 0;
+  87:stm32_simple.c **** 		}
+  88:stm32_simple.c **** 	}
+  89:stm32_simple.c **** }
+  90:stm32_simple.c **** 
+  91:stm32_simple.c **** 
+  92:stm32_simple.c **** void delay100ms(uint32_t s)
+  93:stm32_simple.c **** {
+  29              		.loc 1 93 0
   30              		.cfi_startproc
   31              		@ args = 0, pretend = 0, frame = 8
   32              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -115,665 +127,686 @@
   35 0000 82B0     		sub	sp, sp, #8
   36              	.LCFI0:
   37              		.cfi_def_cfa_offset 8
-  82:stm32_simple.c **** 	volatile uint32_t blink_time = 0;
-  38              		.loc 1 82 0
+  94:stm32_simple.c **** 	volatile uint32_t blink_time = 0;
+  38              		.loc 1 94 0
   39 0002 0023     		movs	r3, #0
   40 0004 0093     		str	r3, [sp]
-  83:stm32_simple.c **** 	volatile uint32_t blink_num = 0;
-  41              		.loc 1 83 0
+  95:stm32_simple.c **** 	volatile uint32_t blink_num = 0;
+  41              		.loc 1 95 0
   42 0006 0193     		str	r3, [sp, #4]
   43              	.L7:
-  84:stm32_simple.c **** 	for (blink_num = 0; blink_num < s; blink_num++)
-  44              		.loc 1 84 0
+  96:stm32_simple.c **** 	for (blink_num = 0; blink_num < s; blink_num++)
+  44              		.loc 1 96 0
   45 0008 0193     		str	r3, [sp, #4]
   46 000a 019B     		ldr	r3, [sp, #4]
   47 000c 8342     		cmp	r3, r0
-  48 000e 0BD2     		bcs	.L9
-  85:stm32_simple.c **** 		for (blink_time = 0; blink_time < BLINK_PERIOD; blink_time++);
-  49              		.loc 1 85 0
+  48 000e 0AD2     		bcs	.L9
+  97:stm32_simple.c **** 		for (blink_time = 0; blink_time < BLINK_PERIOD; blink_time++);
+  49              		.loc 1 97 0
   50 0010 0023     		movs	r3, #0
   51              	.L6:
-  52              		.loc 1 85 0 is_stmt 0 discriminator 2
+  52              		.loc 1 97 0 is_stmt 0 discriminator 2
   53 0012 0093     		str	r3, [sp]
-  54 0014 009A     		ldr	r2, [sp]
-  55 0016 054B     		ldr	r3, .L11
-  56 0018 9A42     		cmp	r2, r3
-  57 001a 02D8     		bhi	.L10
-  58 001c 009B     		ldr	r3, [sp]
-  59 001e 0133     		adds	r3, r3, #1
-  60 0020 F7E7     		b	.L6
-  61              	.L10:
-  84:stm32_simple.c **** 	for (blink_num = 0; blink_num < s; blink_num++)
-  62              		.loc 1 84 0 is_stmt 1
-  63 0022 019B     		ldr	r3, [sp, #4]
-  64 0024 0133     		adds	r3, r3, #1
-  65 0026 EFE7     		b	.L7
-  66              	.L9:
-  86:stm32_simple.c **** }
-  67              		.loc 1 86 0
-  68 0028 02B0     		add	sp, sp, #8
-  69              		@ sp needed
-  70 002a 7047     		bx	lr
-  71              	.L12:
-  72              		.align	2
-  73              	.L11:
-  74 002c CF010100 		.word	65999
-  75              		.cfi_endproc
-  76              	.LFE124:
-  78              		.section	.text.glitch,"ax",%progbits
-  79              		.align	1
-  80              		.global	glitch
-  81              		.thumb
-  82              		.thumb_func
-  84              	glitch:
-  85              	.LFB123:
-  41:stm32_simple.c **** 	volatile uint32_t i, j;
-  86              		.loc 1 41 0
-  87              		.cfi_startproc
-  88              		@ args = 0, pretend = 0, frame = 24
-  89              		@ frame_needed = 0, uses_anonymous_args = 0
-  90 0000 7FB5     		push	{r0, r1, r2, r3, r4, r5, r6, lr}
-  91              	.LCFI1:
-  92              		.cfi_def_cfa_offset 32
-  93              		.cfi_offset 0, -32
-  94              		.cfi_offset 1, -28
-  95              		.cfi_offset 2, -24
-  96              		.cfi_offset 3, -20
-  97              		.cfi_offset 4, -16
-  98              		.cfi_offset 5, -12
-  99              		.cfi_offset 6, -8
- 100              		.cfi_offset 14, -4
-  45:stm32_simple.c **** 	volatile uint32_t glitch_cnt = 0;
- 101              		.loc 1 45 0
- 102 0002 0023     		movs	r3, #0
- 103 0004 0493     		str	r3, [sp, #16]
-  46:stm32_simple.c **** 	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
- 104              		.loc 1 46 0
- 105 0006 0593     		str	r3, [sp, #20]
- 106              	.L31:
-  47:stm32_simple.c **** 		//run led on
- 107              		.loc 1 47 0
- 108 0008 0493     		str	r3, [sp, #16]
- 109 000a 049B     		ldr	r3, [sp, #16]
- 110 000c B3F5967F 		cmp	r3, #300
- 111 0010 5DD2     		bcs	.L32
-  49:stm32_simple.c **** 		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
- 112              		.loc 1 49 0
- 113 0012 3048     		ldr	r0, .L38
- 114 0014 1021     		movs	r1, #16
- 115 0016 0122     		movs	r2, #1
- 116 0018 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 117              	.LVL1:
-  50:stm32_simple.c **** 			for(j=0; j<INNER_LOOP_CNT; j++) {
- 118              		.loc 1 50 0
- 119 001c 0023     		movs	r3, #0
- 120 001e 0193     		str	r3, [sp, #4]
- 121 0020 0393     		str	r3, [sp, #12]
- 122              	.L15:
-  50:stm32_simple.c **** 			for(j=0; j<INNER_LOOP_CNT; j++) {
- 123              		.loc 1 50 0 is_stmt 0 discriminator 1
- 124 0022 019B     		ldr	r3, [sp, #4]
- 125 0024 092B     		cmp	r3, #9
- 126 0026 10D8     		bhi	.L33
-  51:stm32_simple.c **** 				cnt++;
- 127              		.loc 1 51 0 is_stmt 1
- 128 0028 0023     		movs	r3, #0
- 129              	.L28:
-  51:stm32_simple.c **** 				cnt++;
- 130              		.loc 1 51 0 is_stmt 0 discriminator 2
- 131 002a 0293     		str	r3, [sp, #8]
- 132 002c 029A     		ldr	r2, [sp, #8]
- 133 002e 41F28733 		movw	r3, #4999
- 134 0032 9A42     		cmp	r2, r3
- 135 0034 05D8     		bhi	.L34
-  52:stm32_simple.c **** 			}
- 136              		.loc 1 52 0 is_stmt 1 discriminator 2
- 137 0036 039B     		ldr	r3, [sp, #12]
- 138 0038 0133     		adds	r3, r3, #1
- 139 003a 0393     		str	r3, [sp, #12]
-  51:stm32_simple.c **** 				cnt++;
- 140              		.loc 1 51 0 discriminator 2
- 141 003c 029B     		ldr	r3, [sp, #8]
- 142 003e 0133     		adds	r3, r3, #1
- 143 0040 F3E7     		b	.L28
+  54 0014 009B     		ldr	r3, [sp]
+  55 0016 802B     		cmp	r3, #128
+  56 0018 02D8     		bhi	.L10
+  57 001a 009B     		ldr	r3, [sp]
+  58 001c 0133     		adds	r3, r3, #1
+  59 001e F8E7     		b	.L6
+  60              	.L10:
+  96:stm32_simple.c **** 	for (blink_num = 0; blink_num < s; blink_num++)
+  61              		.loc 1 96 0 is_stmt 1
+  62 0020 019B     		ldr	r3, [sp, #4]
+  63 0022 0133     		adds	r3, r3, #1
+  64 0024 F0E7     		b	.L7
+  65              	.L9:
+  98:stm32_simple.c **** }
+  66              		.loc 1 98 0
+  67 0026 02B0     		add	sp, sp, #8
+  68              		@ sp needed
+  69 0028 7047     		bx	lr
+  70              		.cfi_endproc
+  71              	.LFE124:
+  73              		.section	.text.glitch,"ax",%progbits
+  74              		.align	1
+  75              		.global	glitch
+  76              		.thumb
+  77              		.thumb_func
+  79              	glitch:
+  80              	.LFB123:
+  53:stm32_simple.c **** 	volatile uint32_t i, j;
+  81              		.loc 1 53 0
+  82              		.cfi_startproc
+  83              		@ args = 0, pretend = 0, frame = 24
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+  85 0000 7FB5     		push	{r0, r1, r2, r3, r4, r5, r6, lr}
+  86              	.LCFI1:
+  87              		.cfi_def_cfa_offset 32
+  88              		.cfi_offset 0, -32
+  89              		.cfi_offset 1, -28
+  90              		.cfi_offset 2, -24
+  91              		.cfi_offset 3, -20
+  92              		.cfi_offset 4, -16
+  93              		.cfi_offset 5, -12
+  94              		.cfi_offset 6, -8
+  95              		.cfi_offset 14, -4
+  57:stm32_simple.c **** 	volatile uint32_t glitch_cnt = 0;
+  96              		.loc 1 57 0
+  97 0002 0023     		movs	r3, #0
+  98 0004 0493     		str	r3, [sp, #16]
+  58:stm32_simple.c **** 	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
+  99              		.loc 1 58 0
+ 100 0006 0593     		str	r3, [sp, #20]
+ 101              	.L32:
+  59:stm32_simple.c **** 		//run led on
+ 102              		.loc 1 59 0
+ 103 0008 0493     		str	r3, [sp, #16]
+ 104 000a 049B     		ldr	r3, [sp, #16]
+ 105 000c B3F5967F 		cmp	r3, #300
+ 106 0010 57D2     		bcs	.L33
+  61:stm32_simple.c **** 		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
+ 107              		.loc 1 61 0
+ 108 0012 2D48     		ldr	r0, .L39
+ 109 0014 1021     		movs	r1, #16
+ 110 0016 0122     		movs	r2, #1
+ 111 0018 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 112              	.LVL1:
+  62:stm32_simple.c **** 			for(j=0; j<INNER_LOOP_CNT; j++) {
+ 113              		.loc 1 62 0
+ 114 001c 0023     		movs	r3, #0
+ 115 001e 0193     		str	r3, [sp, #4]
+ 116 0020 0393     		str	r3, [sp, #12]
+ 117              	.L13:
+  62:stm32_simple.c **** 			for(j=0; j<INNER_LOOP_CNT; j++) {
+ 118              		.loc 1 62 0 is_stmt 0 discriminator 1
+ 119 0022 019B     		ldr	r3, [sp, #4]
+ 120 0024 092B     		cmp	r3, #9
+ 121 0026 0ED8     		bhi	.L34
+  63:stm32_simple.c **** 				cnt++;
+ 122              		.loc 1 63 0 is_stmt 1
+ 123 0028 0023     		movs	r3, #0
+ 124              	.L29:
+  63:stm32_simple.c **** 				cnt++;
+ 125              		.loc 1 63 0 is_stmt 0 discriminator 2
+ 126 002a 0293     		str	r3, [sp, #8]
+ 127 002c 029B     		ldr	r3, [sp, #8]
+ 128 002e 082B     		cmp	r3, #8
+ 129 0030 05D8     		bhi	.L35
+  64:stm32_simple.c **** 			}
+ 130              		.loc 1 64 0 is_stmt 1 discriminator 2
+ 131 0032 039B     		ldr	r3, [sp, #12]
+ 132 0034 0133     		adds	r3, r3, #1
+ 133 0036 0393     		str	r3, [sp, #12]
+  63:stm32_simple.c **** 				cnt++;
+ 134              		.loc 1 63 0 discriminator 2
+ 135 0038 029B     		ldr	r3, [sp, #8]
+ 136 003a 0133     		adds	r3, r3, #1
+ 137 003c F5E7     		b	.L29
+ 138              	.L35:
+  62:stm32_simple.c **** 			for(j=0; j<INNER_LOOP_CNT; j++) {
+ 139              		.loc 1 62 0
+ 140 003e 019B     		ldr	r3, [sp, #4]
+ 141 0040 0133     		adds	r3, r3, #1
+ 142 0042 0193     		str	r3, [sp, #4]
+ 143 0044 EDE7     		b	.L13
  144              	.L34:
-  50:stm32_simple.c **** 			for(j=0; j<INNER_LOOP_CNT; j++) {
- 145              		.loc 1 50 0
- 146 0042 019B     		ldr	r3, [sp, #4]
- 147 0044 0133     		adds	r3, r3, #1
- 148 0046 0193     		str	r3, [sp, #4]
- 149 0048 EBE7     		b	.L15
- 150              	.L33:
-  57:stm32_simple.c **** 		for(; i < OUTER_LOOP_CNT; i++) {
- 151              		.loc 1 57 0
- 152 004a 2248     		ldr	r0, .L38
- 153 004c 1021     		movs	r1, #16
- 154 004e 0022     		movs	r2, #0
- 155 0050 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 156              	.LVL2:
- 157              	.L19:
-  58:stm32_simple.c **** 			for(j=0; j < INNER_LOOP_CNT; j++){
- 158              		.loc 1 58 0 discriminator 1
- 159 0054 019B     		ldr	r3, [sp, #4]
- 160 0056 632B     		cmp	r3, #99
- 161 0058 10D8     		bhi	.L35
-  59:stm32_simple.c **** 				cnt++;
- 162              		.loc 1 59 0
- 163 005a 0023     		movs	r3, #0
- 164              	.L29:
-  59:stm32_simple.c **** 				cnt++;
- 165              		.loc 1 59 0 is_stmt 0 discriminator 2
- 166 005c 0293     		str	r3, [sp, #8]
- 167 005e 029A     		ldr	r2, [sp, #8]
- 168 0060 41F28733 		movw	r3, #4999
- 169 0064 9A42     		cmp	r2, r3
- 170 0066 05D8     		bhi	.L36
-  60:stm32_simple.c **** 			}
- 171              		.loc 1 60 0 is_stmt 1 discriminator 2
- 172 0068 039B     		ldr	r3, [sp, #12]
- 173 006a 0133     		adds	r3, r3, #1
- 174 006c 0393     		str	r3, [sp, #12]
-  59:stm32_simple.c **** 				cnt++;
- 175              		.loc 1 59 0 discriminator 2
- 176 006e 029B     		ldr	r3, [sp, #8]
- 177 0070 0133     		adds	r3, r3, #1
- 178 0072 F3E7     		b	.L29
- 179              	.L36:
-  58:stm32_simple.c **** 			for(j=0; j < INNER_LOOP_CNT; j++){
- 180              		.loc 1 58 0
- 181 0074 019B     		ldr	r3, [sp, #4]
- 182 0076 0133     		adds	r3, r3, #1
- 183 0078 0193     		str	r3, [sp, #4]
- 184 007a EBE7     		b	.L19
- 185              	.L35:
-  65:stm32_simple.c **** 			//if glitched, reset the run count and blink the fault LED a few times
- 186              		.loc 1 65 0
- 187 007c 019B     		ldr	r3, [sp, #4]
- 188 007e 642B     		cmp	r3, #100
- 189 0080 08D1     		bne	.L23
-  65:stm32_simple.c **** 			//if glitched, reset the run count and blink the fault LED a few times
- 190              		.loc 1 65 0 is_stmt 0 discriminator 1
- 191 0082 029A     		ldr	r2, [sp, #8]
- 192 0084 41F28833 		movw	r3, #5000
- 193 0088 9A42     		cmp	r2, r3
- 194 008a 03D1     		bne	.L23
- 195 008c 039A     		ldr	r2, [sp, #12]
- 196 008e 124B     		ldr	r3, .L38+4
- 197 0090 9A42     		cmp	r2, r3
- 198 0092 19D0     		beq	.L24
- 199              	.L23:
-  67:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
- 200              		.loc 1 67 0 is_stmt 1
- 201 0094 0023     		movs	r3, #0
- 202              	.L30:
-  67:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
- 203              		.loc 1 67 0 is_stmt 0 discriminator 2
- 204 0096 0593     		str	r3, [sp, #20]
- 205 0098 059B     		ldr	r3, [sp, #20]
- 206 009a 022B     		cmp	r3, #2
- 207 009c 12D8     		bhi	.L37
-  68:stm32_simple.c **** 				delay100ms(5);
- 208              		.loc 1 68 0 is_stmt 1 discriminator 2
- 209 009e 0821     		movs	r1, #8
- 210 00a0 0122     		movs	r2, #1
- 211 00a2 0C48     		ldr	r0, .L38
- 212 00a4 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 213              	.LVL3:
-  69:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
- 214              		.loc 1 69 0 discriminator 2
- 215 00a8 0520     		movs	r0, #5
- 216 00aa FFF7FEFF 		bl	delay100ms
- 217              	.LVL4:
-  70:stm32_simple.c **** 				delay100ms(5);
- 218              		.loc 1 70 0 discriminator 2
- 219 00ae 0948     		ldr	r0, .L38
- 220 00b0 0821     		movs	r1, #8
- 221 00b2 0022     		movs	r2, #0
- 222 00b4 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 223              	.LVL5:
-  71:stm32_simple.c **** 			}
- 224              		.loc 1 71 0 discriminator 2
- 225 00b8 0520     		movs	r0, #5
- 226 00ba FFF7FEFF 		bl	delay100ms
- 227              	.LVL6:
-  67:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
- 228              		.loc 1 67 0 discriminator 2
- 229 00be 059B     		ldr	r3, [sp, #20]
- 230 00c0 0133     		adds	r3, r3, #1
- 231 00c2 E8E7     		b	.L30
- 232              	.L37:
-  74:stm32_simple.c **** 		}
- 233              		.loc 1 74 0
- 234 00c4 0023     		movs	r3, #0
- 235 00c6 0493     		str	r3, [sp, #16]
- 236              	.L24:
-  47:stm32_simple.c **** 		//run led on
- 237              		.loc 1 47 0
- 238 00c8 049B     		ldr	r3, [sp, #16]
- 239 00ca 0133     		adds	r3, r3, #1
- 240 00cc 9CE7     		b	.L31
- 241              	.L32:
-  77:stm32_simple.c **** 
- 242              		.loc 1 77 0
- 243 00ce 07B0     		add	sp, sp, #28
- 244              		@ sp needed
- 245 00d0 5DF804FB 		ldr	pc, [sp], #4
- 246              	.L39:
- 247              		.align	2
- 248              	.L38:
- 249 00d4 00040048 		.word	1207960576
- 250 00d8 20A10700 		.word	500000
- 251              		.cfi_endproc
- 252              	.LFE123:
- 254              		.section	.text.startup_blink,"ax",%progbits
- 255              		.align	1
- 256              		.global	startup_blink
- 257              		.thumb
- 258              		.thumb_func
- 260              	startup_blink:
- 261              	.LFB125:
-  87:stm32_simple.c **** 
-  88:stm32_simple.c **** 
-  89:stm32_simple.c **** void startup_blink(void)
-  90:stm32_simple.c **** {
- 262              		.loc 1 90 0
- 263              		.cfi_startproc
- 264              		@ args = 0, pretend = 0, frame = 8
- 265              		@ frame_needed = 0, uses_anonymous_args = 0
- 266 0000 07B5     		push	{r0, r1, r2, lr}
- 267              	.LCFI2:
- 268              		.cfi_def_cfa_offset 16
- 269              		.cfi_offset 0, -16
- 270              		.cfi_offset 1, -12
- 271              		.cfi_offset 2, -8
- 272              		.cfi_offset 14, -4
-  91:stm32_simple.c **** 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4 | GPIO_PIN_5, RESET);
- 273              		.loc 1 91 0
- 274 0002 1048     		ldr	r0, .L45
- 275 0004 3021     		movs	r1, #48
- 276 0006 0022     		movs	r2, #0
- 277 0008 FFF7FEFF 		bl	HAL_GPIO_WritePin
- 278              	.LVL7:
-  92:stm32_simple.c **** 	volatile uint32_t blink_num;
-  93:stm32_simple.c **** 	for (blink_num = 0; blink_num < BLINK_TOT; blink_num++) {
- 279              		.loc 1 93 0
- 280 000c 0023     		movs	r3, #0
- 281              	.L43:
- 282              		.loc 1 93 0 is_stmt 0 discriminator 2
- 283 000e 0193     		str	r3, [sp, #4]
- 284 0010 019B     		ldr	r3, [sp, #4]
- 285 0012 022B     		cmp	r3, #2
- 286 0014 12D8     		bhi	.L44
-  94:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, SET);
- 287              		.loc 1 94 0 is_stmt 1 discriminator 2
- 288 0016 2021     		movs	r1, #32
- 289 0018 0122     		movs	r2, #1
- 290 001a 0A48     		ldr	r0, .L45
- 291 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
- 292              	.LVL8:
-  95:stm32_simple.c **** 		delay100ms(5);
- 293              		.loc 1 95 0 discriminator 2
- 294 0020 0520     		movs	r0, #5
- 295 0022 FFF7FEFF 		bl	delay100ms
- 296              	.LVL9:
-  96:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, RESET);
- 297              		.loc 1 96 0 discriminator 2
- 298 0026 0748     		ldr	r0, .L45
- 299 0028 2021     		movs	r1, #32
- 300 002a 0022     		movs	r2, #0
- 301 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
- 302              	.LVL10:
-  97:stm32_simple.c **** 		delay100ms(5);
- 303              		.loc 1 97 0 discriminator 2
- 304 0030 0520     		movs	r0, #5
- 305 0032 FFF7FEFF 		bl	delay100ms
- 306              	.LVL11:
-  93:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, SET);
- 307              		.loc 1 93 0 discriminator 2
- 308 0036 019B     		ldr	r3, [sp, #4]
- 309 0038 0133     		adds	r3, r3, #1
- 310 003a E8E7     		b	.L43
- 311              	.L44:
-  98:stm32_simple.c **** 	}
-  99:stm32_simple.c **** 	
- 100:stm32_simple.c **** }
- 312              		.loc 1 100 0
- 313 003c 03B0     		add	sp, sp, #12
- 314              		@ sp needed
- 315 003e 5DF804FB 		ldr	pc, [sp], #4
- 316              	.L46:
- 317 0042 00BF     		.align	2
- 318              	.L45:
- 319 0044 00040048 		.word	1207960576
- 320              		.cfi_endproc
- 321              	.LFE125:
- 323              		.section	.text.osc_setup,"ax",%progbits
- 324              		.align	1
- 325              		.global	osc_setup
- 326              		.thumb
- 327              		.thumb_func
- 329              	osc_setup:
- 330              	.LFB126:
- 101:stm32_simple.c **** 
- 102:stm32_simple.c **** 
- 103:stm32_simple.c **** void osc_setup(void)
- 104:stm32_simple.c **** {
- 331              		.loc 1 104 0
- 332              		.cfi_startproc
- 333              		@ args = 0, pretend = 0, frame = 40
- 334              		@ frame_needed = 0, uses_anonymous_args = 0
- 335 0000 00B5     		push	{lr}
- 336              	.LCFI3:
- 337              		.cfi_def_cfa_offset 4
- 338              		.cfi_offset 14, -4
- 339 0002 8BB0     		sub	sp, sp, #44
- 340              	.LCFI4:
- 341              		.cfi_def_cfa_offset 48
- 105:stm32_simple.c **** 	RCC_OscInitTypeDef RCC_OscInitStruct;
- 106:stm32_simple.c **** 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
- 342              		.loc 1 106 0
- 343 0004 0223     		movs	r3, #2
- 344 0006 0093     		str	r3, [sp]
- 107:stm32_simple.c **** 	RCC_OscInitStruct.HSEState       = RCC_HSE_OFF;
- 108:stm32_simple.c **** 	RCC_OscInitStruct.HSIState       = RCC_HSI_ON;
- 345              		.loc 1 108 0
- 346 0008 0122     		movs	r2, #1
- 107:stm32_simple.c **** 	RCC_OscInitStruct.HSEState       = RCC_HSE_OFF;
- 347              		.loc 1 107 0
- 348 000a 0023     		movs	r3, #0
- 109:stm32_simple.c **** 	RCC_OscInitStruct.PLL.PLLSource  = RCC_PLL_NONE;
- 110:stm32_simple.c **** 	RCC_OscInitStruct.LSIState		 = RCC_LSI_OFF;
- 111:stm32_simple.c **** 	HAL_RCC_OscConfig(&RCC_OscInitStruct);
- 349              		.loc 1 111 0
- 350 000c 6846     		mov	r0, sp
- 107:stm32_simple.c **** 	RCC_OscInitStruct.HSEState       = RCC_HSE_OFF;
- 351              		.loc 1 107 0
- 352 000e 0193     		str	r3, [sp, #4]
- 108:stm32_simple.c **** 	RCC_OscInitStruct.PLL.PLLSource  = RCC_PLL_NONE;
- 353              		.loc 1 108 0
- 354 0010 0492     		str	r2, [sp, #16]
- 109:stm32_simple.c **** 	RCC_OscInitStruct.PLL.PLLSource  = RCC_PLL_NONE;
- 355              		.loc 1 109 0
- 356 0012 0893     		str	r3, [sp, #32]
- 110:stm32_simple.c **** 	HAL_RCC_OscConfig(&RCC_OscInitStruct);
- 357              		.loc 1 110 0
- 358 0014 0693     		str	r3, [sp, #24]
- 359              		.loc 1 111 0
- 360 0016 FFF7FEFF 		bl	HAL_RCC_OscConfig
- 361              	.LVL12:
+  69:stm32_simple.c **** 		for(; i < OUTER_LOOP_CNT; i++) {
+ 145              		.loc 1 69 0
+ 146 0046 2048     		ldr	r0, .L39
+ 147 0048 1021     		movs	r1, #16
+ 148 004a 0022     		movs	r2, #0
+ 149 004c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 150              	.LVL2:
+ 151              	.L17:
+  70:stm32_simple.c **** 			for(j=0; j < INNER_LOOP_CNT; j++){
+ 152              		.loc 1 70 0 discriminator 1
+ 153 0050 019B     		ldr	r3, [sp, #4]
+ 154 0052 632B     		cmp	r3, #99
+ 155 0054 0ED8     		bhi	.L36
+  71:stm32_simple.c **** 				cnt++;
+ 156              		.loc 1 71 0
+ 157 0056 0023     		movs	r3, #0
+ 158              	.L30:
+  71:stm32_simple.c **** 				cnt++;
+ 159              		.loc 1 71 0 is_stmt 0 discriminator 2
+ 160 0058 0293     		str	r3, [sp, #8]
+ 161 005a 029B     		ldr	r3, [sp, #8]
+ 162 005c 082B     		cmp	r3, #8
+ 163 005e 05D8     		bhi	.L37
+  72:stm32_simple.c **** 			}
+ 164              		.loc 1 72 0 is_stmt 1 discriminator 2
+ 165 0060 039B     		ldr	r3, [sp, #12]
+ 166 0062 0133     		adds	r3, r3, #1
+ 167 0064 0393     		str	r3, [sp, #12]
+  71:stm32_simple.c **** 				cnt++;
+ 168              		.loc 1 71 0 discriminator 2
+ 169 0066 029B     		ldr	r3, [sp, #8]
+ 170 0068 0133     		adds	r3, r3, #1
+ 171 006a F5E7     		b	.L30
+ 172              	.L37:
+  70:stm32_simple.c **** 			for(j=0; j < INNER_LOOP_CNT; j++){
+ 173              		.loc 1 70 0
+ 174 006c 019B     		ldr	r3, [sp, #4]
+ 175 006e 0133     		adds	r3, r3, #1
+ 176 0070 0193     		str	r3, [sp, #4]
+ 177 0072 EDE7     		b	.L17
+ 178              	.L36:
+  77:stm32_simple.c **** 			//if glitched, reset the run count and blink the fault LED a few times
+ 179              		.loc 1 77 0
+ 180 0074 019B     		ldr	r3, [sp, #4]
+ 181 0076 642B     		cmp	r3, #100
+ 182 0078 06D1     		bne	.L21
+  77:stm32_simple.c **** 			//if glitched, reset the run count and blink the fault LED a few times
+ 183              		.loc 1 77 0 is_stmt 0 discriminator 1
+ 184 007a 029B     		ldr	r3, [sp, #8]
+ 185 007c 092B     		cmp	r3, #9
+ 186 007e 03D1     		bne	.L21
+ 187 0080 039B     		ldr	r3, [sp, #12]
+ 188 0082 B3F5617F 		cmp	r3, #900
+ 189 0086 19D0     		beq	.L22
+ 190              	.L21:
+  79:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
+ 191              		.loc 1 79 0 is_stmt 1
+ 192 0088 0023     		movs	r3, #0
+ 193              	.L31:
+  79:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
+ 194              		.loc 1 79 0 is_stmt 0 discriminator 2
+ 195 008a 0593     		str	r3, [sp, #20]
+ 196 008c 059B     		ldr	r3, [sp, #20]
+ 197 008e 022B     		cmp	r3, #2
+ 198 0090 12D8     		bhi	.L38
+  80:stm32_simple.c **** 				delay100ms(5);
+ 199              		.loc 1 80 0 is_stmt 1 discriminator 2
+ 200 0092 0821     		movs	r1, #8
+ 201 0094 0122     		movs	r2, #1
+ 202 0096 0C48     		ldr	r0, .L39
+ 203 0098 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 204              	.LVL3:
+  81:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
+ 205              		.loc 1 81 0 discriminator 2
+ 206 009c 0520     		movs	r0, #5
+ 207 009e FFF7FEFF 		bl	delay100ms
+ 208              	.LVL4:
+  82:stm32_simple.c **** 				delay100ms(5);
+ 209              		.loc 1 82 0 discriminator 2
+ 210 00a2 0948     		ldr	r0, .L39
+ 211 00a4 0821     		movs	r1, #8
+ 212 00a6 0022     		movs	r2, #0
+ 213 00a8 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 214              	.LVL5:
+  83:stm32_simple.c **** 			}
+ 215              		.loc 1 83 0 discriminator 2
+ 216 00ac 0520     		movs	r0, #5
+ 217 00ae FFF7FEFF 		bl	delay100ms
+ 218              	.LVL6:
+  79:stm32_simple.c **** 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
+ 219              		.loc 1 79 0 discriminator 2
+ 220 00b2 059B     		ldr	r3, [sp, #20]
+ 221 00b4 0133     		adds	r3, r3, #1
+ 222 00b6 E8E7     		b	.L31
+ 223              	.L38:
+  86:stm32_simple.c **** 		}
+ 224              		.loc 1 86 0
+ 225 00b8 0023     		movs	r3, #0
+ 226 00ba 0493     		str	r3, [sp, #16]
+ 227              	.L22:
+  59:stm32_simple.c **** 		//run led on
+ 228              		.loc 1 59 0
+ 229 00bc 049B     		ldr	r3, [sp, #16]
+ 230 00be 0133     		adds	r3, r3, #1
+ 231 00c0 A2E7     		b	.L32
+ 232              	.L33:
+  89:stm32_simple.c **** 
+ 233              		.loc 1 89 0
+ 234 00c2 07B0     		add	sp, sp, #28
+ 235              		@ sp needed
+ 236 00c4 5DF804FB 		ldr	pc, [sp], #4
+ 237              	.L40:
+ 238              		.align	2
+ 239              	.L39:
+ 240 00c8 00040048 		.word	1207960576
+ 241              		.cfi_endproc
+ 242              	.LFE123:
+ 244              		.section	.text.startup_blink,"ax",%progbits
+ 245              		.align	1
+ 246              		.global	startup_blink
+ 247              		.thumb
+ 248              		.thumb_func
+ 250              	startup_blink:
+ 251              	.LFB125:
+  99:stm32_simple.c **** 
+ 100:stm32_simple.c **** 
+ 101:stm32_simple.c **** void startup_blink(void)
+ 102:stm32_simple.c **** {
+ 252              		.loc 1 102 0
+ 253              		.cfi_startproc
+ 254              		@ args = 0, pretend = 0, frame = 8
+ 255              		@ frame_needed = 0, uses_anonymous_args = 0
+ 256 0000 07B5     		push	{r0, r1, r2, lr}
+ 257              	.LCFI2:
+ 258              		.cfi_def_cfa_offset 16
+ 259              		.cfi_offset 0, -16
+ 260              		.cfi_offset 1, -12
+ 261              		.cfi_offset 2, -8
+ 262              		.cfi_offset 14, -4
+ 103:stm32_simple.c **** 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4 | GPIO_PIN_5, RESET);
+ 263              		.loc 1 103 0
+ 264 0002 1048     		ldr	r0, .L46
+ 265 0004 3021     		movs	r1, #48
+ 266 0006 0022     		movs	r2, #0
+ 267 0008 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 268              	.LVL7:
+ 104:stm32_simple.c **** 	volatile uint32_t blink_num;
+ 105:stm32_simple.c **** 	for (blink_num = 0; blink_num < BLINK_TOT; blink_num++) {
+ 269              		.loc 1 105 0
+ 270 000c 0023     		movs	r3, #0
+ 271              	.L44:
+ 272              		.loc 1 105 0 is_stmt 0 discriminator 2
+ 273 000e 0193     		str	r3, [sp, #4]
+ 274 0010 019B     		ldr	r3, [sp, #4]
+ 275 0012 022B     		cmp	r3, #2
+ 276 0014 12D8     		bhi	.L45
+ 106:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, SET);
+ 277              		.loc 1 106 0 is_stmt 1 discriminator 2
+ 278 0016 2021     		movs	r1, #32
+ 279 0018 0122     		movs	r2, #1
+ 280 001a 0A48     		ldr	r0, .L46
+ 281 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 282              	.LVL8:
+ 107:stm32_simple.c **** 		delay100ms(5);
+ 283              		.loc 1 107 0 discriminator 2
+ 284 0020 0520     		movs	r0, #5
+ 285 0022 FFF7FEFF 		bl	delay100ms
+ 286              	.LVL9:
+ 108:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, RESET);
+ 287              		.loc 1 108 0 discriminator 2
+ 288 0026 0748     		ldr	r0, .L46
+ 289 0028 2021     		movs	r1, #32
+ 290 002a 0022     		movs	r2, #0
+ 291 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 292              	.LVL10:
+ 109:stm32_simple.c **** 		delay100ms(5);
+ 293              		.loc 1 109 0 discriminator 2
+ 294 0030 0520     		movs	r0, #5
+ 295 0032 FFF7FEFF 		bl	delay100ms
+ 296              	.LVL11:
+ 105:stm32_simple.c **** 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, SET);
+ 297              		.loc 1 105 0 discriminator 2
+ 298 0036 019B     		ldr	r3, [sp, #4]
+ 299 0038 0133     		adds	r3, r3, #1
+ 300 003a E8E7     		b	.L44
+ 301              	.L45:
+ 110:stm32_simple.c **** 	}
+ 111:stm32_simple.c **** 	
  112:stm32_simple.c **** }
- 362              		.loc 1 112 0
- 363 001a 0BB0     		add	sp, sp, #44
- 364              		@ sp needed
- 365 001c 5DF804FB 		ldr	pc, [sp], #4
- 366              		.cfi_endproc
- 367              	.LFE126:
- 369              		.section	.text.power_setup,"ax",%progbits
- 370              		.align	1
- 371              		.global	power_setup
- 372              		.thumb
- 373              		.thumb_func
- 375              	power_setup:
- 376              	.LFB127:
+ 302              		.loc 1 112 0
+ 303 003c 03B0     		add	sp, sp, #12
+ 304              		@ sp needed
+ 305 003e 5DF804FB 		ldr	pc, [sp], #4
+ 306              	.L47:
+ 307 0042 00BF     		.align	2
+ 308              	.L46:
+ 309 0044 00040048 		.word	1207960576
+ 310              		.cfi_endproc
+ 311              	.LFE125:
+ 313              		.section	.text.osc_setup,"ax",%progbits
+ 314              		.align	1
+ 315              		.global	osc_setup
+ 316              		.thumb
+ 317              		.thumb_func
+ 319              	osc_setup:
+ 320              	.LFB126:
  113:stm32_simple.c **** 
- 114:stm32_simple.c **** void power_setup(void)
- 115:stm32_simple.c **** {
- 377              		.loc 1 115 0
- 378              		.cfi_startproc
- 379              		@ args = 0, pretend = 0, frame = 8
- 380              		@ frame_needed = 0, uses_anonymous_args = 0
- 381              	.LBB2:
- 116:stm32_simple.c **** 	__HAL_RCC_PWR_CLK_ENABLE();
- 382              		.loc 1 116 0
- 383 0000 074B     		ldr	r3, .L49
- 384              	.LBE2:
- 115:stm32_simple.c **** 	__HAL_RCC_PWR_CLK_ENABLE();
- 385              		.loc 1 115 0
- 386 0002 07B5     		push	{r0, r1, r2, lr}
- 387              	.LCFI5:
- 388              		.cfi_def_cfa_offset 16
- 389              		.cfi_offset 0, -16
- 390              		.cfi_offset 1, -12
- 391              		.cfi_offset 2, -8
- 392              		.cfi_offset 14, -4
- 393              	.LBB3:
- 394              		.loc 1 116 0
- 395 0004 DA69     		ldr	r2, [r3, #28]
- 396 0006 42F08052 		orr	r2, r2, #268435456
- 397 000a DA61     		str	r2, [r3, #28]
- 398 000c DB69     		ldr	r3, [r3, #28]
- 399 000e 03F08053 		and	r3, r3, #268435456
- 400 0012 0193     		str	r3, [sp, #4]
- 401 0014 019B     		ldr	r3, [sp, #4]
- 402              	.LBE3:
- 117:stm32_simple.c **** 	HAL_PWR_EnableBkUpAccess();
- 403              		.loc 1 117 0
- 404 0016 FFF7FEFF 		bl	HAL_PWR_EnableBkUpAccess
- 405              	.LVL13:
- 118:stm32_simple.c **** }
- 406              		.loc 1 118 0
- 407 001a 03B0     		add	sp, sp, #12
- 408              		@ sp needed
- 409 001c 5DF804FB 		ldr	pc, [sp], #4
- 410              	.L50:
- 411              		.align	2
- 412              	.L49:
- 413 0020 00100240 		.word	1073876992
- 414              		.cfi_endproc
- 415              	.LFE127:
- 417              		.section	.text.init_GPIOB,"ax",%progbits
- 418              		.align	1
- 419              		.global	init_GPIOB
- 420              		.thumb
- 421              		.thumb_func
- 423              	init_GPIOB:
- 424              	.LFB128:
- 119:stm32_simple.c **** 
- 120:stm32_simple.c **** void init_GPIOB(void)
- 121:stm32_simple.c **** {
- 425              		.loc 1 121 0
- 426              		.cfi_startproc
- 427              		@ args = 0, pretend = 0, frame = 24
- 428              		@ frame_needed = 0, uses_anonymous_args = 0
- 429 0000 7FB5     		push	{r0, r1, r2, r3, r4, r5, r6, lr}
- 430              	.LCFI6:
- 431              		.cfi_def_cfa_offset 32
- 432              		.cfi_offset 0, -32
- 433              		.cfi_offset 1, -28
- 434              		.cfi_offset 2, -24
- 435              		.cfi_offset 3, -20
- 436              		.cfi_offset 4, -16
- 437              		.cfi_offset 5, -12
- 438              		.cfi_offset 6, -8
- 439              		.cfi_offset 14, -4
- 440              	.LBB4:
- 122:stm32_simple.c **** 	__HAL_RCC_GPIOB_CLK_ENABLE();
- 441              		.loc 1 122 0
- 442 0002 0C4B     		ldr	r3, .L52
- 443              	.LBE4:
- 123:stm32_simple.c **** 	GPIO_InitTypeDef GpioInit;
- 124:stm32_simple.c **** 	GpioInit.Pin       = GPIO_PIN_5 | GPIO_PIN_4 | GPIO_PIN_3;
- 125:stm32_simple.c **** 	GpioInit.Mode      = GPIO_MODE_OUTPUT_PP;
- 126:stm32_simple.c **** 	GpioInit.Pull      = GPIO_NOPULL;
- 127:stm32_simple.c **** 	GpioInit.Speed     = GPIO_SPEED_HIGH;
- 128:stm32_simple.c **** 	HAL_GPIO_Init(GPIOB, &GpioInit);
- 444              		.loc 1 128 0
- 445 0004 0C48     		ldr	r0, .L52+4
- 446              	.LBB5:
- 122:stm32_simple.c **** 	__HAL_RCC_GPIOB_CLK_ENABLE();
- 447              		.loc 1 122 0
- 448 0006 5A69     		ldr	r2, [r3, #20]
- 449 0008 42F48022 		orr	r2, r2, #262144
- 450 000c 5A61     		str	r2, [r3, #20]
- 451 000e 5B69     		ldr	r3, [r3, #20]
- 452 0010 03F48023 		and	r3, r3, #262144
- 453 0014 0093     		str	r3, [sp]
- 454 0016 009B     		ldr	r3, [sp]
- 455              	.LBE5:
- 124:stm32_simple.c **** 	GpioInit.Mode      = GPIO_MODE_OUTPUT_PP;
- 456              		.loc 1 124 0
- 457 0018 3823     		movs	r3, #56
- 458 001a 0193     		str	r3, [sp, #4]
- 125:stm32_simple.c **** 	GpioInit.Pull      = GPIO_NOPULL;
- 459              		.loc 1 125 0
- 460 001c 0123     		movs	r3, #1
- 461 001e 0293     		str	r3, [sp, #8]
- 126:stm32_simple.c **** 	GpioInit.Speed     = GPIO_SPEED_HIGH;
- 462              		.loc 1 126 0
- 463 0020 0023     		movs	r3, #0
- 464 0022 0393     		str	r3, [sp, #12]
- 465              		.loc 1 128 0
- 466 0024 01A9     		add	r1, sp, #4
- 127:stm32_simple.c **** 	HAL_GPIO_Init(GPIOB, &GpioInit);
- 467              		.loc 1 127 0
- 468 0026 0323     		movs	r3, #3
- 469 0028 0493     		str	r3, [sp, #16]
- 470              		.loc 1 128 0
- 471 002a FFF7FEFF 		bl	HAL_GPIO_Init
- 472              	.LVL14:
- 129:stm32_simple.c **** }
- 473              		.loc 1 129 0
- 474 002e 07B0     		add	sp, sp, #28
- 475              		@ sp needed
- 476 0030 5DF804FB 		ldr	pc, [sp], #4
- 477              	.L53:
- 478              		.align	2
- 479              	.L52:
- 480 0034 00100240 		.word	1073876992
- 481 0038 00040048 		.word	1207960576
- 482              		.cfi_endproc
- 483              	.LFE128:
- 485              		.section	.text.enter_standby,"ax",%progbits
- 486              		.align	1
- 487              		.global	enter_standby
- 488              		.thumb
- 489              		.thumb_func
- 491              	enter_standby:
- 492              	.LFB129:
- 130:stm32_simple.c **** 
- 131:stm32_simple.c **** void enter_standby(void)
- 132:stm32_simple.c **** {
- 493              		.loc 1 132 0
- 494              		.cfi_startproc
- 495              		@ args = 0, pretend = 0, frame = 0
- 496              		@ frame_needed = 0, uses_anonymous_args = 0
- 497 0000 08B5     		push	{r3, lr}
- 498              	.LCFI7:
- 499              		.cfi_def_cfa_offset 8
- 500              		.cfi_offset 3, -8
- 501              		.cfi_offset 14, -4
- 133:stm32_simple.c **** 	HAL_PWR_DisablePVD(); //disable power voltage detector
- 502              		.loc 1 133 0
- 503 0002 FFF7FEFF 		bl	HAL_PWR_DisablePVD
- 504              	.LVL15:
- 134:stm32_simple.c **** 	HAL_PWR_EnterSTANDBYMode();
- 135:stm32_simple.c **** }
- 505              		.loc 1 135 0
- 506 0006 BDE80840 		pop	{r3, lr}
- 134:stm32_simple.c **** 	HAL_PWR_EnterSTANDBYMode();
- 507              		.loc 1 134 0
- 508 000a FFF7FEBF 		b	HAL_PWR_EnterSTANDBYMode
- 509              	.LVL16:
- 510              		.cfi_endproc
- 511              	.LFE129:
- 513              		.section	.text.startup.main,"ax",%progbits
- 514              		.align	1
- 515              		.global	main
- 516              		.thumb
- 517              		.thumb_func
- 519              	main:
- 520              	.LFB130:
- 136:stm32_simple.c **** 
- 137:stm32_simple.c **** int main(void)
- 138:stm32_simple.c **** {
- 521              		.loc 1 138 0
- 522              		.cfi_startproc
- 523              		@ Volatile: function does not return.
- 524              		@ args = 0, pretend = 0, frame = 0
- 525              		@ frame_needed = 0, uses_anonymous_args = 0
- 526 0000 08B5     		push	{r3, lr}
- 527              	.LCFI8:
- 528              		.cfi_def_cfa_offset 8
- 529              		.cfi_offset 3, -8
- 530              		.cfi_offset 14, -4
- 139:stm32_simple.c **** 	osc_setup();
- 531              		.loc 1 139 0
- 532 0002 FFF7FEFF 		bl	osc_setup
- 533              	.LVL17:
- 140:stm32_simple.c **** 	power_setup();
- 534              		.loc 1 140 0
- 535 0006 FFF7FEFF 		bl	power_setup
- 536              	.LVL18:
- 141:stm32_simple.c **** 	init_GPIOB();
- 537              		.loc 1 141 0
- 538 000a FFF7FEFF 		bl	init_GPIOB
- 539              	.LVL19:
- 142:stm32_simple.c **** 	
- 143:stm32_simple.c **** 	startup_blink();
- 540              		.loc 1 143 0
- 541 000e FFF7FEFF 		bl	startup_blink
- 542              	.LVL20:
- 144:stm32_simple.c **** 	//enter glitch loop
- 145:stm32_simple.c **** 	glitch();
- 543              		.loc 1 145 0
- 544 0012 FFF7FEFF 		bl	glitch
- 545              	.LVL21:
- 146:stm32_simple.c **** 	
- 147:stm32_simple.c **** 	//enter standby mode
- 148:stm32_simple.c **** 	enter_standby();
- 546              		.loc 1 148 0
- 547 0016 FFF7FEFF 		bl	enter_standby
- 548              	.LVL22:
- 549              	.L56:
- 550 001a FEE7     		b	.L56
- 551              		.cfi_endproc
- 552              	.LFE130:
- 554              		.global	glitched
- 555              		.bss
- 558              	glitched:
- 559 0000 00       		.space	1
- 560              		.text
- 561              	.Letext0:
- 562              		.file 2 "/usr/include/newlib/machine/_default_types.h"
- 563              		.file 3 "/usr/include/newlib/stdint.h"
- 564              		.file 4 ".././hal/stm32f3/CMSIS/device/stm32f303x8.h"
- 565              		.file 5 ".././hal/stm32f3/CMSIS/device/stm32f3xx.h"
- 566              		.file 6 ".././hal/stm32f3/stm32f3xx_hal_def.h"
- 567              		.file 7 ".././hal/stm32f3/stm32f3xx_hal_rcc.h"
- 568              		.file 8 ".././hal/stm32f3/stm32f3xx_hal_gpio.h"
- 569              		.file 9 ".././hal/stm32f3/CMSIS/core/core_cm4.h"
- 570              		.file 10 ".././hal/stm32f3/stm32f3xx_hal_pwr.h"
- 571              		.file 11 ".././hal/stm32f3/stm32f3xx_hal_pwr_ex.h"
+ 114:stm32_simple.c **** 
+ 115:stm32_simple.c **** void osc_setup(void)
+ 116:stm32_simple.c **** {
+ 321              		.loc 1 116 0
+ 322              		.cfi_startproc
+ 323              		@ args = 0, pretend = 0, frame = 64
+ 324              		@ frame_needed = 0, uses_anonymous_args = 0
+ 325 0000 10B5     		push	{r4, lr}
+ 326              	.LCFI3:
+ 327              		.cfi_def_cfa_offset 8
+ 328              		.cfi_offset 4, -8
+ 329              		.cfi_offset 14, -4
+ 330 0002 90B0     		sub	sp, sp, #64
+ 331              	.LCFI4:
+ 332              		.cfi_def_cfa_offset 72
+ 117:stm32_simple.c **** 	RCC_OscInitTypeDef RCC_OscInitStruct;
+ 118:stm32_simple.c **** 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATO
+ 333              		.loc 1 118 0
+ 334 0004 0B23     		movs	r3, #11
+ 119:stm32_simple.c **** 	RCC_OscInitStruct.HSEState       = RCC_HSE_OFF;
+ 335              		.loc 1 119 0
+ 336 0006 0024     		movs	r4, #0
+ 118:stm32_simple.c **** 	RCC_OscInitStruct.HSEState       = RCC_HSE_OFF;
+ 337              		.loc 1 118 0
+ 338 0008 0693     		str	r3, [sp, #24]
+ 120:stm32_simple.c **** 	RCC_OscInitStruct.HSIState       = RCC_HSI_ON;
+ 121:stm32_simple.c **** 	RCC_OscInitStruct.PLL.PLLSource  = RCC_PLL_NONE;
+ 122:stm32_simple.c **** 	RCC_OscInitStruct.LSIState		 = RCC_LSI_OFF;
+ 123:stm32_simple.c **** 	HAL_RCC_OscConfig(&RCC_OscInitStruct);
+ 339              		.loc 1 123 0
+ 340 000a 06A8     		add	r0, sp, #24
+ 120:stm32_simple.c **** 	RCC_OscInitStruct.HSIState       = RCC_HSI_ON;
+ 341              		.loc 1 120 0
+ 342 000c 0123     		movs	r3, #1
+ 343 000e 0A93     		str	r3, [sp, #40]
+ 119:stm32_simple.c **** 	RCC_OscInitStruct.HSIState       = RCC_HSI_ON;
+ 344              		.loc 1 119 0
+ 345 0010 0794     		str	r4, [sp, #28]
+ 121:stm32_simple.c **** 	RCC_OscInitStruct.LSIState		 = RCC_LSI_OFF;
+ 346              		.loc 1 121 0
+ 347 0012 0E94     		str	r4, [sp, #56]
+ 122:stm32_simple.c **** 	HAL_RCC_OscConfig(&RCC_OscInitStruct);
+ 348              		.loc 1 122 0
+ 349 0014 0C94     		str	r4, [sp, #48]
+ 350              		.loc 1 123 0
+ 351 0016 FFF7FEFF 		bl	HAL_RCC_OscConfig
+ 352              	.LVL12:
+ 124:stm32_simple.c **** 	
+ 125:stm32_simple.c **** 	#ifdef DIV_HSI_512
+ 126:stm32_simple.c **** 	//can't use LSI as system clock, but can divide HSI clock
+ 127:stm32_simple.c **** 	RCC_ClkInitTypeDef clk;
+ 128:stm32_simple.c **** 	clk.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK;
+ 353              		.loc 1 128 0
+ 354 001a 0323     		movs	r3, #3
+ 355 001c 0193     		str	r3, [sp, #4]
+ 129:stm32_simple.c **** 	clk.AHBCLKDivider = RCC_SYSCLK_DIV512; //as slow as possible
+ 130:stm32_simple.c **** 	clk.SYSCLKSource   = RCC_SYSCLKSOURCE_HSI;
+ 131:stm32_simple.c **** 	uint32_t flash_latency = 5;
+ 132:stm32_simple.c **** 	HAL_RCC_ClockConfig(&clk, flash_latency);
+ 356              		.loc 1 132 0
+ 357 001e 01A8     		add	r0, sp, #4
+ 129:stm32_simple.c **** 	clk.AHBCLKDivider = RCC_SYSCLK_DIV512; //as slow as possible
+ 358              		.loc 1 129 0
+ 359 0020 F023     		movs	r3, #240
+ 360              		.loc 1 132 0
+ 361 0022 0521     		movs	r1, #5
+ 129:stm32_simple.c **** 	clk.AHBCLKDivider = RCC_SYSCLK_DIV512; //as slow as possible
+ 362              		.loc 1 129 0
+ 363 0024 0393     		str	r3, [sp, #12]
+ 130:stm32_simple.c **** 	uint32_t flash_latency = 5;
+ 364              		.loc 1 130 0
+ 365 0026 0294     		str	r4, [sp, #8]
+ 366              	.LVL13:
+ 367              		.loc 1 132 0
+ 368 0028 FFF7FEFF 		bl	HAL_RCC_ClockConfig
+ 369              	.LVL14:
+ 133:stm32_simple.c **** 	#endif
+ 134:stm32_simple.c **** }
+ 370              		.loc 1 134 0
+ 371 002c 10B0     		add	sp, sp, #64
+ 372              		@ sp needed
+ 373 002e 10BD     		pop	{r4, pc}
+ 374              		.cfi_endproc
+ 375              	.LFE126:
+ 377              		.section	.text.power_setup,"ax",%progbits
+ 378              		.align	1
+ 379              		.global	power_setup
+ 380              		.thumb
+ 381              		.thumb_func
+ 383              	power_setup:
+ 384              	.LFB127:
+ 135:stm32_simple.c **** 
+ 136:stm32_simple.c **** void power_setup(void)
+ 137:stm32_simple.c **** {
+ 385              		.loc 1 137 0
+ 386              		.cfi_startproc
+ 387              		@ args = 0, pretend = 0, frame = 8
+ 388              		@ frame_needed = 0, uses_anonymous_args = 0
+ 389              	.LBB2:
+ 138:stm32_simple.c **** 	__HAL_RCC_PWR_CLK_ENABLE();
+ 390              		.loc 1 138 0
+ 391 0000 074B     		ldr	r3, .L50
+ 392              	.LBE2:
+ 137:stm32_simple.c **** 	__HAL_RCC_PWR_CLK_ENABLE();
+ 393              		.loc 1 137 0
+ 394 0002 07B5     		push	{r0, r1, r2, lr}
+ 395              	.LCFI5:
+ 396              		.cfi_def_cfa_offset 16
+ 397              		.cfi_offset 0, -16
+ 398              		.cfi_offset 1, -12
+ 399              		.cfi_offset 2, -8
+ 400              		.cfi_offset 14, -4
+ 401              	.LBB3:
+ 402              		.loc 1 138 0
+ 403 0004 DA69     		ldr	r2, [r3, #28]
+ 404 0006 42F08052 		orr	r2, r2, #268435456
+ 405 000a DA61     		str	r2, [r3, #28]
+ 406 000c DB69     		ldr	r3, [r3, #28]
+ 407 000e 03F08053 		and	r3, r3, #268435456
+ 408 0012 0193     		str	r3, [sp, #4]
+ 409 0014 019B     		ldr	r3, [sp, #4]
+ 410              	.LBE3:
+ 139:stm32_simple.c **** 	HAL_PWR_EnableBkUpAccess();
+ 411              		.loc 1 139 0
+ 412 0016 FFF7FEFF 		bl	HAL_PWR_EnableBkUpAccess
+ 413              	.LVL15:
+ 140:stm32_simple.c **** }
+ 414              		.loc 1 140 0
+ 415 001a 03B0     		add	sp, sp, #12
+ 416              		@ sp needed
+ 417 001c 5DF804FB 		ldr	pc, [sp], #4
+ 418              	.L51:
+ 419              		.align	2
+ 420              	.L50:
+ 421 0020 00100240 		.word	1073876992
+ 422              		.cfi_endproc
+ 423              	.LFE127:
+ 425              		.section	.text.init_GPIOB,"ax",%progbits
+ 426              		.align	1
+ 427              		.global	init_GPIOB
+ 428              		.thumb
+ 429              		.thumb_func
+ 431              	init_GPIOB:
+ 432              	.LFB128:
+ 141:stm32_simple.c **** 
+ 142:stm32_simple.c **** void init_GPIOB(void)
+ 143:stm32_simple.c **** {
+ 433              		.loc 1 143 0
+ 434              		.cfi_startproc
+ 435              		@ args = 0, pretend = 0, frame = 24
+ 436              		@ frame_needed = 0, uses_anonymous_args = 0
+ 437 0000 7FB5     		push	{r0, r1, r2, r3, r4, r5, r6, lr}
+ 438              	.LCFI6:
+ 439              		.cfi_def_cfa_offset 32
+ 440              		.cfi_offset 0, -32
+ 441              		.cfi_offset 1, -28
+ 442              		.cfi_offset 2, -24
+ 443              		.cfi_offset 3, -20
+ 444              		.cfi_offset 4, -16
+ 445              		.cfi_offset 5, -12
+ 446              		.cfi_offset 6, -8
+ 447              		.cfi_offset 14, -4
+ 448              	.LBB4:
+ 144:stm32_simple.c **** 	__HAL_RCC_GPIOB_CLK_ENABLE();
+ 449              		.loc 1 144 0
+ 450 0002 0C4B     		ldr	r3, .L53
+ 451              	.LBE4:
+ 145:stm32_simple.c **** 	GPIO_InitTypeDef GpioInit;
+ 146:stm32_simple.c **** 	GpioInit.Pin       = GPIO_PIN_5 | GPIO_PIN_4 | GPIO_PIN_3;
+ 147:stm32_simple.c **** 	GpioInit.Mode      = GPIO_MODE_OUTPUT_PP;
+ 148:stm32_simple.c **** 	GpioInit.Pull      = GPIO_NOPULL;
+ 149:stm32_simple.c **** 	GpioInit.Speed     = GPIO_SPEED_HIGH;
+ 150:stm32_simple.c **** 	HAL_GPIO_Init(GPIOB, &GpioInit);
+ 452              		.loc 1 150 0
+ 453 0004 0C48     		ldr	r0, .L53+4
+ 454              	.LBB5:
+ 144:stm32_simple.c **** 	__HAL_RCC_GPIOB_CLK_ENABLE();
+ 455              		.loc 1 144 0
+ 456 0006 5A69     		ldr	r2, [r3, #20]
+ 457 0008 42F48022 		orr	r2, r2, #262144
+ 458 000c 5A61     		str	r2, [r3, #20]
+ 459 000e 5B69     		ldr	r3, [r3, #20]
+ 460 0010 03F48023 		and	r3, r3, #262144
+ 461 0014 0093     		str	r3, [sp]
+ 462 0016 009B     		ldr	r3, [sp]
+ 463              	.LBE5:
+ 146:stm32_simple.c **** 	GpioInit.Mode      = GPIO_MODE_OUTPUT_PP;
+ 464              		.loc 1 146 0
+ 465 0018 3823     		movs	r3, #56
+ 466 001a 0193     		str	r3, [sp, #4]
+ 147:stm32_simple.c **** 	GpioInit.Pull      = GPIO_NOPULL;
+ 467              		.loc 1 147 0
+ 468 001c 0123     		movs	r3, #1
+ 469 001e 0293     		str	r3, [sp, #8]
+ 148:stm32_simple.c **** 	GpioInit.Speed     = GPIO_SPEED_HIGH;
+ 470              		.loc 1 148 0
+ 471 0020 0023     		movs	r3, #0
+ 472 0022 0393     		str	r3, [sp, #12]
+ 473              		.loc 1 150 0
+ 474 0024 01A9     		add	r1, sp, #4
+ 149:stm32_simple.c **** 	HAL_GPIO_Init(GPIOB, &GpioInit);
+ 475              		.loc 1 149 0
+ 476 0026 0323     		movs	r3, #3
+ 477 0028 0493     		str	r3, [sp, #16]
+ 478              		.loc 1 150 0
+ 479 002a FFF7FEFF 		bl	HAL_GPIO_Init
+ 480              	.LVL16:
+ 151:stm32_simple.c **** }
+ 481              		.loc 1 151 0
+ 482 002e 07B0     		add	sp, sp, #28
+ 483              		@ sp needed
+ 484 0030 5DF804FB 		ldr	pc, [sp], #4
+ 485              	.L54:
+ 486              		.align	2
+ 487              	.L53:
+ 488 0034 00100240 		.word	1073876992
+ 489 0038 00040048 		.word	1207960576
+ 490              		.cfi_endproc
+ 491              	.LFE128:
+ 493              		.section	.text.enter_standby,"ax",%progbits
+ 494              		.align	1
+ 495              		.global	enter_standby
+ 496              		.thumb
+ 497              		.thumb_func
+ 499              	enter_standby:
+ 500              	.LFB129:
+ 152:stm32_simple.c **** 
+ 153:stm32_simple.c **** void enter_standby(void)
+ 154:stm32_simple.c **** {
+ 501              		.loc 1 154 0
+ 502              		.cfi_startproc
+ 503              		@ args = 0, pretend = 0, frame = 0
+ 504              		@ frame_needed = 0, uses_anonymous_args = 0
+ 505 0000 08B5     		push	{r3, lr}
+ 506              	.LCFI7:
+ 507              		.cfi_def_cfa_offset 8
+ 508              		.cfi_offset 3, -8
+ 509              		.cfi_offset 14, -4
+ 155:stm32_simple.c **** 	HAL_PWR_DisablePVD(); //disable power voltage detector
+ 510              		.loc 1 155 0
+ 511 0002 FFF7FEFF 		bl	HAL_PWR_DisablePVD
+ 512              	.LVL17:
+ 156:stm32_simple.c **** 	HAL_PWR_EnterSTANDBYMode();
+ 157:stm32_simple.c **** }
+ 513              		.loc 1 157 0
+ 514 0006 BDE80840 		pop	{r3, lr}
+ 156:stm32_simple.c **** 	HAL_PWR_EnterSTANDBYMode();
+ 515              		.loc 1 156 0
+ 516 000a FFF7FEBF 		b	HAL_PWR_EnterSTANDBYMode
+ 517              	.LVL18:
+ 518              		.cfi_endproc
+ 519              	.LFE129:
+ 521              		.section	.text.startup.main,"ax",%progbits
+ 522              		.align	1
+ 523              		.global	main
+ 524              		.thumb
+ 525              		.thumb_func
+ 527              	main:
+ 528              	.LFB130:
+ 158:stm32_simple.c **** 
+ 159:stm32_simple.c **** int main(void)
+ 160:stm32_simple.c **** {
+ 529              		.loc 1 160 0
+ 530              		.cfi_startproc
+ 531              		@ Volatile: function does not return.
+ 532              		@ args = 0, pretend = 0, frame = 0
+ 533              		@ frame_needed = 0, uses_anonymous_args = 0
+ 534 0000 08B5     		push	{r3, lr}
+ 535              	.LCFI8:
+ 536              		.cfi_def_cfa_offset 8
+ 537              		.cfi_offset 3, -8
+ 538              		.cfi_offset 14, -4
+ 161:stm32_simple.c **** 	osc_setup();
+ 539              		.loc 1 161 0
+ 540 0002 FFF7FEFF 		bl	osc_setup
+ 541              	.LVL19:
+ 162:stm32_simple.c **** 	power_setup();
+ 542              		.loc 1 162 0
+ 543 0006 FFF7FEFF 		bl	power_setup
+ 544              	.LVL20:
+ 163:stm32_simple.c **** 	init_GPIOB();
+ 545              		.loc 1 163 0
+ 546 000a FFF7FEFF 		bl	init_GPIOB
+ 547              	.LVL21:
+ 164:stm32_simple.c **** 	
+ 165:stm32_simple.c **** 	startup_blink();
+ 548              		.loc 1 165 0
+ 549 000e FFF7FEFF 		bl	startup_blink
+ 550              	.LVL22:
+ 166:stm32_simple.c **** 	//enter glitch loop
+ 167:stm32_simple.c **** 	glitch();
+ 551              		.loc 1 167 0
+ 552 0012 FFF7FEFF 		bl	glitch
+ 553              	.LVL23:
+ 168:stm32_simple.c **** 	
+ 169:stm32_simple.c **** 	//enter standby mode
+ 170:stm32_simple.c **** 	enter_standby();
+ 554              		.loc 1 170 0
+ 555 0016 FFF7FEFF 		bl	enter_standby
+ 556              	.LVL24:
+ 557              	.L57:
+ 558 001a FEE7     		b	.L57
+ 559              		.cfi_endproc
+ 560              	.LFE130:
+ 562              		.global	glitched
+ 563              		.bss
+ 566              	glitched:
+ 567 0000 00       		.space	1
+ 568              		.text
+ 569              	.Letext0:
+ 570              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 571              		.file 3 "/usr/include/newlib/stdint.h"
+ 572              		.file 4 ".././hal/stm32f3/CMSIS/device/stm32f303x8.h"
+ 573              		.file 5 ".././hal/stm32f3/CMSIS/device/stm32f3xx.h"
+ 574              		.file 6 ".././hal/stm32f3/stm32f3xx_hal_def.h"
+ 575              		.file 7 ".././hal/stm32f3/stm32f3xx_hal_rcc.h"
+ 576              		.file 8 ".././hal/stm32f3/stm32f3xx_hal_gpio.h"
+ 577              		.file 9 ".././hal/stm32f3/CMSIS/core/core_cm4.h"
+ 578              		.file 10 ".././hal/stm32f3/stm32f3xx_hal_pwr.h"
+ 579              		.file 11 ".././hal/stm32f3/stm32f3xx_hal_pwr_ex.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 stm32_simple.c
-     /tmp/cc1WmmyR.s:21     .text.delay100ms:00000000 $t
-     /tmp/cc1WmmyR.s:26     .text.delay100ms:00000000 delay100ms
-     /tmp/cc1WmmyR.s:74     .text.delay100ms:0000002c $d
-     /tmp/cc1WmmyR.s:79     .text.glitch:00000000 $t
-     /tmp/cc1WmmyR.s:84     .text.glitch:00000000 glitch
-     /tmp/cc1WmmyR.s:249    .text.glitch:000000d4 $d
-     /tmp/cc1WmmyR.s:255    .text.startup_blink:00000000 $t
-     /tmp/cc1WmmyR.s:260    .text.startup_blink:00000000 startup_blink
-     /tmp/cc1WmmyR.s:319    .text.startup_blink:00000044 $d
-     /tmp/cc1WmmyR.s:324    .text.osc_setup:00000000 $t
-     /tmp/cc1WmmyR.s:329    .text.osc_setup:00000000 osc_setup
-     /tmp/cc1WmmyR.s:370    .text.power_setup:00000000 $t
-     /tmp/cc1WmmyR.s:375    .text.power_setup:00000000 power_setup
-     /tmp/cc1WmmyR.s:413    .text.power_setup:00000020 $d
-     /tmp/cc1WmmyR.s:418    .text.init_GPIOB:00000000 $t
-     /tmp/cc1WmmyR.s:423    .text.init_GPIOB:00000000 init_GPIOB
-     /tmp/cc1WmmyR.s:480    .text.init_GPIOB:00000034 $d
-     /tmp/cc1WmmyR.s:486    .text.enter_standby:00000000 $t
-     /tmp/cc1WmmyR.s:491    .text.enter_standby:00000000 enter_standby
-     /tmp/cc1WmmyR.s:514    .text.startup.main:00000000 $t
-     /tmp/cc1WmmyR.s:519    .text.startup.main:00000000 main
-     /tmp/cc1WmmyR.s:558    .bss:00000000 glitched
-     /tmp/cc1WmmyR.s:559    .bss:00000000 $d
+     /tmp/ccoMJJbX.s:21     .text.delay100ms:00000000 $t
+     /tmp/ccoMJJbX.s:26     .text.delay100ms:00000000 delay100ms
+     /tmp/ccoMJJbX.s:74     .text.glitch:00000000 $t
+     /tmp/ccoMJJbX.s:79     .text.glitch:00000000 glitch
+     /tmp/ccoMJJbX.s:240    .text.glitch:000000c8 $d
+     /tmp/ccoMJJbX.s:245    .text.startup_blink:00000000 $t
+     /tmp/ccoMJJbX.s:250    .text.startup_blink:00000000 startup_blink
+     /tmp/ccoMJJbX.s:309    .text.startup_blink:00000044 $d
+     /tmp/ccoMJJbX.s:314    .text.osc_setup:00000000 $t
+     /tmp/ccoMJJbX.s:319    .text.osc_setup:00000000 osc_setup
+     /tmp/ccoMJJbX.s:378    .text.power_setup:00000000 $t
+     /tmp/ccoMJJbX.s:383    .text.power_setup:00000000 power_setup
+     /tmp/ccoMJJbX.s:421    .text.power_setup:00000020 $d
+     /tmp/ccoMJJbX.s:426    .text.init_GPIOB:00000000 $t
+     /tmp/ccoMJJbX.s:431    .text.init_GPIOB:00000000 init_GPIOB
+     /tmp/ccoMJJbX.s:488    .text.init_GPIOB:00000034 $d
+     /tmp/ccoMJJbX.s:494    .text.enter_standby:00000000 $t
+     /tmp/ccoMJJbX.s:499    .text.enter_standby:00000000 enter_standby
+     /tmp/ccoMJJbX.s:522    .text.startup.main:00000000 $t
+     /tmp/ccoMJJbX.s:527    .text.startup.main:00000000 main
+     /tmp/ccoMJJbX.s:566    .bss:00000000 glitched
+     /tmp/ccoMJJbX.s:567    .bss:00000000 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS
 HAL_GPIO_WritePin
 HAL_RCC_OscConfig
+HAL_RCC_ClockConfig
 HAL_PWR_EnableBkUpAccess
 HAL_GPIO_Init
 HAL_PWR_DisablePVD

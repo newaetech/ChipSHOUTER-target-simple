@@ -499,25 +499,25 @@
  405              		.file 11 ".././hal/stm32f3/CMSIS/core/core_cm4.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 stm32f3_hal.c
-     /tmp/ccj47oCb.s:21     .text.platform_init:00000000 $t
-     /tmp/ccj47oCb.s:26     .text.platform_init:00000000 platform_init
-     /tmp/ccj47oCb.s:87     .text.init_uart:00000000 $t
-     /tmp/ccj47oCb.s:92     .text.init_uart:00000000 init_uart
-     /tmp/ccj47oCb.s:183    .text.init_uart:0000006c $d
+     /tmp/ccgHcxVn.s:21     .text.platform_init:00000000 $t
+     /tmp/ccgHcxVn.s:26     .text.platform_init:00000000 platform_init
+     /tmp/ccgHcxVn.s:87     .text.init_uart:00000000 $t
+     /tmp/ccgHcxVn.s:92     .text.init_uart:00000000 init_uart
+     /tmp/ccgHcxVn.s:183    .text.init_uart:0000006c $d
                             *COM*:00000070 UartHandle
-     /tmp/ccj47oCb.s:190    .text.trigger_setup:00000000 $t
-     /tmp/ccj47oCb.s:195    .text.trigger_setup:00000000 trigger_setup
-     /tmp/ccj47oCb.s:264    .text.trigger_setup:00000044 $d
-     /tmp/ccj47oCb.s:269    .text.trigger_high:00000000 $t
-     /tmp/ccj47oCb.s:274    .text.trigger_high:00000000 trigger_high
-     /tmp/ccj47oCb.s:291    .text.trigger_low:00000000 $t
-     /tmp/ccj47oCb.s:296    .text.trigger_low:00000000 trigger_low
-     /tmp/ccj47oCb.s:313    .text.getch:00000000 $t
-     /tmp/ccj47oCb.s:318    .text.getch:00000000 getch
-     /tmp/ccj47oCb.s:346    .text.getch:0000001c $d
-     /tmp/ccj47oCb.s:351    .text.putch:00000000 $t
-     /tmp/ccj47oCb.s:356    .text.putch:00000000 putch
-     /tmp/ccj47oCb.s:389    .text.putch:0000001c $d
+     /tmp/ccgHcxVn.s:190    .text.trigger_setup:00000000 $t
+     /tmp/ccgHcxVn.s:195    .text.trigger_setup:00000000 trigger_setup
+     /tmp/ccgHcxVn.s:264    .text.trigger_setup:00000044 $d
+     /tmp/ccgHcxVn.s:269    .text.trigger_high:00000000 $t
+     /tmp/ccgHcxVn.s:274    .text.trigger_high:00000000 trigger_high
+     /tmp/ccgHcxVn.s:291    .text.trigger_low:00000000 $t
+     /tmp/ccgHcxVn.s:296    .text.trigger_low:00000000 trigger_low
+     /tmp/ccgHcxVn.s:313    .text.getch:00000000 $t
+     /tmp/ccgHcxVn.s:318    .text.getch:00000000 getch
+     /tmp/ccgHcxVn.s:346    .text.getch:0000001c $d
+     /tmp/ccgHcxVn.s:351    .text.putch:00000000 $t
+     /tmp/ccgHcxVn.s:356    .text.putch:00000000 putch
+     /tmp/ccgHcxVn.s:389    .text.putch:0000001c $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS
