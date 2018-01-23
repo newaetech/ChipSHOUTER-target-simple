@@ -1,0 +1,452 @@
+   1              		.syntax unified
+   2              		.cpu cortex-m4
+   3              		.eabi_attribute 27, 3
+   4              		.eabi_attribute 28, 1
+   5              		.fpu fpv4-sp-d16
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 4
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.thumb
+  16              		.file	"stm32f3xx_hal_pwr_ex.c"
+  17              		.text
+  18              	.Ltext0:
+  19              		.cfi_sections	.debug_frame
+  20              		.section	.text.HAL_PWR_ConfigPVD,"ax",%progbits
+  21              		.align	1
+  22              		.global	HAL_PWR_ConfigPVD
+  23              		.thumb
+  24              		.thumb_func
+  26              	HAL_PWR_ConfigPVD:
+  27              	.LFB123:
+  28              		.file 1 ".././hal/stm32f3/stm32f3xx_hal_pwr_ex.c"
+   1:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /**
+   2:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   ******************************************************************************
+   3:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @file    stm32f3xx_hal_pwr_ex.c
+   4:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @author  MCD Application Team
+   5:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @brief   Extended PWR HAL module driver.
+   6:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *          This file provides firmware functions to manage the following
+   7:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *          functionalities of the Power Controller (PWR) peripheral:
+   8:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *           + Extended Initialization and de-initialization functions
+   9:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *           + Extended Peripheral Control functions
+  10:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *         
+  11:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   ******************************************************************************
+  12:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @attention
+  13:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *
+  14:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
+  15:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *
+  16:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * Redistribution and use in source and binary forms, with or without modification,
+  17:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * are permitted provided that the following conditions are met:
+  18:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *   1. Redistributions of source code must retain the above copyright notice,
+  19:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *      this list of conditions and the following disclaimer.
+  20:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *   2. Redistributions in binary form must reproduce the above copyright notice,
+  21:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *      this list of conditions and the following disclaimer in the documentation
+  22:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *      and/or other materials provided with the distribution.
+  23:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *   3. Neither the name of STMicroelectronics nor the names of its contributors
+  24:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *      may be used to endorse or promote products derived from this software
+  25:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *      without specific prior written permission.
+  26:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *
+  27:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  28:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  29:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  30:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  31:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  32:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  33:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  34:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  35:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  36:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  37:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *
+  38:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   ******************************************************************************
+  39:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+  40:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  41:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /* Includes ------------------------------------------------------------------*/
+  42:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** #include "stm32f3xx_hal.h"
+  43:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  44:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /** @addtogroup STM32F3xx_HAL_Driver
+  45:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @{
+  46:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+  47:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  48:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /** @defgroup PWREx PWREx
+  49:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @brief    PWREx HAL module driver
+  50:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @{
+  51:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+  52:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  53:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** #ifdef HAL_PWR_MODULE_ENABLED
+  54:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  55:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /* Private typedef -----------------------------------------------------------*/
+  56:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /* Private define ------------------------------------------------------------*/
+  57:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /** @defgroup PWREx_Private_Constants PWR Extended Private Constants
+  58:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @{
+  59:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+  60:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** #define PVD_MODE_IT               (0x00010000U)
+  61:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** #define PVD_MODE_EVT              (0x00020000U)
+  62:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** #define PVD_RISING_EDGE           (0x00000001U)
+  63:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** #define PVD_FALLING_EDGE          (0x00000002U)
+  64:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /**
+  65:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @}
+  66:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+  67:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****  
+  68:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /* Private macro -------------------------------------------------------------*/
+  69:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /* Private variables ---------------------------------------------------------*/
+  70:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /* Private function prototypes -----------------------------------------------*/
+  71:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /* Exported functions ---------------------------------------------------------*/
+  72:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  73:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /** @defgroup PWREx_Exported_Functions PWR Extended Exported Functions
+  74:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @{
+  75:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+  76:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  77:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /** @defgroup PWREx_Exported_Functions_Group1 Peripheral Extended Control Functions
+  78:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *  @brief   Extended Peripheral Control functions
+  79:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *
+  80:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** @verbatim
+  81:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  82:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****  ===============================================================================
+  83:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****                  ##### Peripheral Extended control functions #####
+  84:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****  ===============================================================================
+  85:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     *** PVD configuration (present on all other devices than STM32F3x8 devices) ***
+  86:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     =========================
+  87:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     [..]
+  88:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****       (+) The PVD is used to monitor the VDD power supply by comparing it to a
+  89:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           threshold selected by the PVD Level (PLS[2:0] bits in the PWR_CR).
+  90:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****       (+) A PVDO flag is available to indicate if VDD/VDDA is higher or lower
+  91:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           than the PVD threshold. This event is internally connected to the EXTI
+  92:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           line16 and can generate an interrupt if enabled. This is done through
+  93:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           __HAL_PWR_PVD_EXTI_ENABLE_IT() macro
+  94:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****       (+) The PVD is stopped in Standby mode.
+  95:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****       -@- PVD is not available on STM32F3x8 Product Line
+  96:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  97:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+  98:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     *** Voltage regulator ***
+  99:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     =========================
+ 100:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     [..]
+ 101:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****       (+) The voltage regulator is always enabled after Reset. It works in three different
+ 102:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           modes.
+ 103:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           In Run mode, the regulator supplies full power to the 1.8V domain (core, memories
+ 104:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           and digital peripherals).
+ 105:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           In Stop mode, the regulator supplies low power to the 1.8V domain, preserving
+ 106:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           contents of registers and SRAM.
+ 107:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           In Stop mode, the regulator is powered off. The contents of the registers and SRAM
+ 108:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           are lost except for the Standby circuitry and the Backup Domain.
+ 109:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           Note: in the STM32F3x8xx devices, the voltage regulator is bypassed and the
+ 110:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           microcontroller must be powered from a nominal VDD = 1.8V +/-8U% voltage.
+ 111:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 112:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 113:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****       (+) A PVDO flag is available to indicate if VDD/VDDA is higher or lower
+ 114:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           than the PVD threshold. This event is internally connected to the EXTI
+ 115:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           line16 and can generate an interrupt if enabled. This is done through
+ 116:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           __HAL_PWR_PVD_EXTI_ENABLE_IT() macro
+ 117:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****       (+) The PVD is stopped in Standby mode.
+ 118:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 119:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 120:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     *** SDADC power configuration ***
+ 121:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     ================================
+ 122:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     [..]
+ 123:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****       (+) On STM32F373xC/STM32F378xx devices, there are up to 
+ 124:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****           3 SDADC instances that can be enabled/disabled.
+ 125:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 126:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** @endverbatim
+ 127:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @{
+ 128:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+ 129:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 130:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** #if defined(STM32F302xE) || defined(STM32F303xE) || \
+ 131:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     defined(STM32F302xC) || defined(STM32F303xC) || \
+ 132:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     defined(STM32F303x8) || defined(STM32F334x8) || \
+ 133:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     defined(STM32F301x8) || defined(STM32F302x8) || \
+ 134:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     defined(STM32F373xC)
+ 135:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 136:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /**
+ 137:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @brief Configures the voltage threshold detected by the Power Voltage Detector(PVD).
+ 138:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @param sConfigPVD pointer to an PWR_PVDTypeDef structure that contains the configuration
+ 139:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *        information for the PVD.
+ 140:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @note Refer to the electrical characteristics of your device datasheet for
+ 141:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *         more details about the voltage threshold corresponding to each
+ 142:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   *         detection level.
+ 143:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @retval None
+ 144:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+ 145:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** void HAL_PWR_ConfigPVD(PWR_PVDTypeDef *sConfigPVD)
+ 146:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** {
+  29              		.loc 1 146 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              	.LVL0:
+ 147:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Check the parameters */
+ 148:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   assert_param(IS_PWR_PVD_LEVEL(sConfigPVD->PVDLevel));
+ 149:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   assert_param(IS_PWR_PVD_MODE(sConfigPVD->Mode));
+ 150:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 151:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Set PLS[7:5] bits according to PVDLevel value */
+ 152:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   MODIFY_REG(PWR->CR, PWR_CR_PLS, sConfigPVD->PVDLevel);
+  35              		.loc 1 152 0
+  36 0000 194B     		ldr	r3, .L19
+  37 0002 0268     		ldr	r2, [r0]
+  38 0004 1968     		ldr	r1, [r3]
+  39 0006 21F0E001 		bic	r1, r1, #224
+  40 000a 0A43     		orrs	r2, r2, r1
+  41 000c 1A60     		str	r2, [r3]
+ 153:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   
+ 154:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Clear any previous config. Keep it clear if no event or IT mode is selected */
+ 155:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   __HAL_PWR_PVD_EXTI_DISABLE_EVENT();
+  42              		.loc 1 155 0
+  43 000e 03F51443 		add	r3, r3, #37888
+  44 0012 5A68     		ldr	r2, [r3, #4]
+  45 0014 22F48032 		bic	r2, r2, #65536
+  46 0018 5A60     		str	r2, [r3, #4]
+ 156:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   __HAL_PWR_PVD_EXTI_DISABLE_IT();
+  47              		.loc 1 156 0
+  48 001a 1A68     		ldr	r2, [r3]
+  49 001c 22F48032 		bic	r2, r2, #65536
+  50 0020 1A60     		str	r2, [r3]
+ 157:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   __HAL_PWR_PVD_EXTI_DISABLE_RISING_EDGE();__HAL_PWR_PVD_EXTI_DISABLE_FALLING_EDGE();
+  51              		.loc 1 157 0
+  52 0022 9A68     		ldr	r2, [r3, #8]
+  53 0024 22F48032 		bic	r2, r2, #65536
+  54 0028 9A60     		str	r2, [r3, #8]
+  55 002a DA68     		ldr	r2, [r3, #12]
+  56 002c 22F48032 		bic	r2, r2, #65536
+  57 0030 DA60     		str	r2, [r3, #12]
+ 158:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 159:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Configure interrupt mode */
+ 160:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   if((sConfigPVD->Mode & PVD_MODE_IT) == PVD_MODE_IT)
+  58              		.loc 1 160 0
+  59 0032 4268     		ldr	r2, [r0, #4]
+  60 0034 D103     		lsls	r1, r2, #15
+  61 0036 03D5     		bpl	.L2
+ 161:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   {
+ 162:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     __HAL_PWR_PVD_EXTI_ENABLE_IT();
+  62              		.loc 1 162 0
+  63 0038 1968     		ldr	r1, [r3]
+  64 003a 41F48031 		orr	r1, r1, #65536
+  65 003e 1960     		str	r1, [r3]
+  66              	.L2:
+ 163:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   }
+ 164:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   
+ 165:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Configure event mode */
+ 166:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   if((sConfigPVD->Mode & PVD_MODE_EVT) == PVD_MODE_EVT)
+  67              		.loc 1 166 0
+  68 0040 9003     		lsls	r0, r2, #14
+  69              	.LVL1:
+  70 0042 03D5     		bpl	.L3
+ 167:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   {
+ 168:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     __HAL_PWR_PVD_EXTI_ENABLE_EVENT();
+  71              		.loc 1 168 0
+  72 0044 5968     		ldr	r1, [r3, #4]
+  73 0046 41F48031 		orr	r1, r1, #65536
+  74 004a 5960     		str	r1, [r3, #4]
+  75              	.L3:
+ 169:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   }
+ 170:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   
+ 171:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Configure the edge */
+ 172:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   if((sConfigPVD->Mode & PVD_RISING_EDGE) == PVD_RISING_EDGE)
+  76              		.loc 1 172 0
+  77 004c D107     		lsls	r1, r2, #31
+  78 004e 03D5     		bpl	.L4
+ 173:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   {
+ 174:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     __HAL_PWR_PVD_EXTI_ENABLE_RISING_EDGE();
+  79              		.loc 1 174 0
+  80 0050 9968     		ldr	r1, [r3, #8]
+  81 0052 41F48031 		orr	r1, r1, #65536
+  82 0056 9960     		str	r1, [r3, #8]
+  83              	.L4:
+ 175:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   }
+ 176:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   
+ 177:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   if((sConfigPVD->Mode & PVD_FALLING_EDGE) == PVD_FALLING_EDGE)
+  84              		.loc 1 177 0
+  85 0058 9207     		lsls	r2, r2, #30
+  86 005a 03D5     		bpl	.L1
+ 178:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   {
+ 179:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     __HAL_PWR_PVD_EXTI_ENABLE_FALLING_EDGE();
+  87              		.loc 1 179 0
+  88 005c DA68     		ldr	r2, [r3, #12]
+  89 005e 42F48032 		orr	r2, r2, #65536
+  90 0062 DA60     		str	r2, [r3, #12]
+  91              	.L1:
+  92 0064 7047     		bx	lr
+  93              	.L20:
+  94 0066 00BF     		.align	2
+  95              	.L19:
+  96 0068 00700040 		.word	1073770496
+  97              		.cfi_endproc
+  98              	.LFE123:
+ 100              		.section	.text.HAL_PWR_EnablePVD,"ax",%progbits
+ 101              		.align	1
+ 102              		.global	HAL_PWR_EnablePVD
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	HAL_PWR_EnablePVD:
+ 107              	.LFB124:
+ 180:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   }
+ 181:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** }
+ 182:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 183:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /**
+ 184:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @brief Enables the Power Voltage Detector(PVD).
+ 185:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @retval None
+ 186:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+ 187:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** void HAL_PWR_EnablePVD(void)
+ 188:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** {
+ 108              		.loc 1 188 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112              		@ link register save eliminated.
+ 189:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   SET_BIT(PWR->CR, PWR_CR_PVDE);  
+ 113              		.loc 1 189 0
+ 114 0000 024B     		ldr	r3, .L22
+ 115 0002 1A68     		ldr	r2, [r3]
+ 116 0004 42F01002 		orr	r2, r2, #16
+ 117 0008 1A60     		str	r2, [r3]
+ 118 000a 7047     		bx	lr
+ 119              	.L23:
+ 120              		.align	2
+ 121              	.L22:
+ 122 000c 00700040 		.word	1073770496
+ 123              		.cfi_endproc
+ 124              	.LFE124:
+ 126              		.section	.text.HAL_PWR_DisablePVD,"ax",%progbits
+ 127              		.align	1
+ 128              		.global	HAL_PWR_DisablePVD
+ 129              		.thumb
+ 130              		.thumb_func
+ 132              	HAL_PWR_DisablePVD:
+ 133              	.LFB125:
+ 190:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** }
+ 191:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 192:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /**
+ 193:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @brief Disables the Power Voltage Detector(PVD).
+ 194:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @retval None
+ 195:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+ 196:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** void HAL_PWR_DisablePVD(void)
+ 197:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** {
+ 134              		.loc 1 197 0
+ 135              		.cfi_startproc
+ 136              		@ args = 0, pretend = 0, frame = 0
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138              		@ link register save eliminated.
+ 198:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   CLEAR_BIT(PWR->CR, PWR_CR_PVDE);  
+ 139              		.loc 1 198 0
+ 140 0000 024B     		ldr	r3, .L25
+ 141 0002 1A68     		ldr	r2, [r3]
+ 142 0004 22F01002 		bic	r2, r2, #16
+ 143 0008 1A60     		str	r2, [r3]
+ 144 000a 7047     		bx	lr
+ 145              	.L26:
+ 146              		.align	2
+ 147              	.L25:
+ 148 000c 00700040 		.word	1073770496
+ 149              		.cfi_endproc
+ 150              	.LFE125:
+ 152              		.section	.text.HAL_PWR_PVDCallback,"ax",%progbits
+ 153              		.align	1
+ 154              		.weak	HAL_PWR_PVDCallback
+ 155              		.thumb
+ 156              		.thumb_func
+ 158              	HAL_PWR_PVDCallback:
+ 159              	.LFB127:
+ 199:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** }
+ 200:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 201:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /**
+ 202:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @brief This function handles the PWR PVD interrupt request.
+ 203:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @note This API should be called under the PVD_IRQHandler().
+ 204:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @retval None
+ 205:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+ 206:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** void HAL_PWR_PVD_IRQHandler(void)
+ 207:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** {
+ 208:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Check PWR exti flag */
+ 209:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   if(__HAL_PWR_PVD_EXTI_GET_FLAG() != RESET)
+ 210:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   {
+ 211:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     /* PWR PVD interrupt user callback */
+ 212:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     HAL_PWR_PVDCallback();
+ 213:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 214:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     /* Clear PWR Exti pending bit */
+ 215:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****     __HAL_PWR_PVD_EXTI_CLEAR_FLAG();
+ 216:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   }
+ 217:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** }
+ 218:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 219:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** /**
+ 220:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @brief PWR PVD interrupt callback
+ 221:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   * @retval None
+ 222:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   */
+ 223:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** __weak void HAL_PWR_PVDCallback(void)
+ 224:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** {
+ 160              		.loc 1 224 0
+ 161              		.cfi_startproc
+ 162              		@ args = 0, pretend = 0, frame = 0
+ 163              		@ frame_needed = 0, uses_anonymous_args = 0
+ 164              		@ link register save eliminated.
+ 165 0000 7047     		bx	lr
+ 166              		.cfi_endproc
+ 167              	.LFE127:
+ 169              		.section	.text.HAL_PWR_PVD_IRQHandler,"ax",%progbits
+ 170              		.align	1
+ 171              		.global	HAL_PWR_PVD_IRQHandler
+ 172              		.thumb
+ 173              		.thumb_func
+ 175              	HAL_PWR_PVD_IRQHandler:
+ 176              	.LFB126:
+ 207:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Check PWR exti flag */
+ 177              		.loc 1 207 0
+ 178              		.cfi_startproc
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 207:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   /* Check PWR exti flag */
+ 181              		.loc 1 207 0
+ 182 0000 10B5     		push	{r4, lr}
+ 183              	.LCFI0:
+ 184              		.cfi_def_cfa_offset 8
+ 185              		.cfi_offset 4, -8
+ 186              		.cfi_offset 14, -4
+ 209:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   {
+ 187              		.loc 1 209 0
+ 188 0002 054C     		ldr	r4, .L33
+ 189 0004 6369     		ldr	r3, [r4, #20]
+ 190 0006 DB03     		lsls	r3, r3, #15
+ 191 0008 04D5     		bpl	.L28
+ 212:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c **** 
+ 192              		.loc 1 212 0
+ 193 000a FFF7FEFF 		bl	HAL_PWR_PVDCallback
+ 194              	.LVL2:
+ 215:.././hal/stm32f3/stm32f3xx_hal_pwr_ex.c ****   }
+ 195              		.loc 1 215 0
+ 196 000e 4FF48033 		mov	r3, #65536
+ 197 0012 6361     		str	r3, [r4, #20]
+ 198              	.L28:
+ 199 0014 10BD     		pop	{r4, pc}
+ 200              	.L34:
+ 201 0016 00BF     		.align	2
+ 202              	.L33:
+ 203 0018 00040140 		.word	1073808384
+ 204              		.cfi_endproc
+ 205              	.LFE126:
+ 207              		.text
+ 208              	.Letext0:
+ 209              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 210              		.file 3 "/usr/include/newlib/stdint.h"
+ 211              		.file 4 ".././hal/stm32f3/CMSIS/device/stm32f303x8.h"
+ 212              		.file 5 ".././hal/stm32f3/stm32f3xx_hal_pwr_ex.h"
+ 213              		.file 6 ".././hal/stm32f3/CMSIS/device/stm32f3xx.h"
+ 214              		.file 7 ".././hal/stm32f3/CMSIS/core/core_cm4.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f3xx_hal_pwr_ex.c
+     /tmp/cc9Ks8G3.s:21     .text.HAL_PWR_ConfigPVD:00000000 $t
+     /tmp/cc9Ks8G3.s:26     .text.HAL_PWR_ConfigPVD:00000000 HAL_PWR_ConfigPVD
+     /tmp/cc9Ks8G3.s:96     .text.HAL_PWR_ConfigPVD:00000068 $d
+     /tmp/cc9Ks8G3.s:101    .text.HAL_PWR_EnablePVD:00000000 $t
+     /tmp/cc9Ks8G3.s:106    .text.HAL_PWR_EnablePVD:00000000 HAL_PWR_EnablePVD
+     /tmp/cc9Ks8G3.s:122    .text.HAL_PWR_EnablePVD:0000000c $d
+     /tmp/cc9Ks8G3.s:127    .text.HAL_PWR_DisablePVD:00000000 $t
+     /tmp/cc9Ks8G3.s:132    .text.HAL_PWR_DisablePVD:00000000 HAL_PWR_DisablePVD
+     /tmp/cc9Ks8G3.s:148    .text.HAL_PWR_DisablePVD:0000000c $d
+     /tmp/cc9Ks8G3.s:153    .text.HAL_PWR_PVDCallback:00000000 $t
+     /tmp/cc9Ks8G3.s:158    .text.HAL_PWR_PVDCallback:00000000 HAL_PWR_PVDCallback
+     /tmp/cc9Ks8G3.s:170    .text.HAL_PWR_PVD_IRQHandler:00000000 $t
+     /tmp/cc9Ks8G3.s:175    .text.HAL_PWR_PVD_IRQHandler:00000000 HAL_PWR_PVD_IRQHandler
+     /tmp/cc9Ks8G3.s:203    .text.HAL_PWR_PVD_IRQHandler:00000018 $d
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS
