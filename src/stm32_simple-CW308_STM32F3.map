@@ -273,9 +273,9 @@ LOAD /usr/lib/gcc/arm-none-eabi/4.8/armv7e-m/fpu/crtn.o
  *(.text)
  .text          0x08000188       0xac /usr/lib/gcc/arm-none-eabi/4.8/armv7e-m/fpu/crtbegin.o
  *(.text*)
- .text.delay500ms
+ .text.delay100ms
                 0x08000234       0x30 objdir/stm32_simple.o
-                0x08000234                delay500ms
+                0x08000234                delay100ms
  .text.glitch   0x08000264       0xdc objdir/stm32_simple.o
                 0x08000264                glitch
  .text.startup_blink
@@ -763,7 +763,7 @@ _start                                            /usr/lib/gcc/arm-none-eabi/4.8
 atexit                                            /usr/lib/gcc/arm-none-eabi/4.8/../../../arm-none-eabi/lib/armv7e-m/fpu/libg.a(lib_a-atexit.o)
                                                   /usr/lib/gcc/arm-none-eabi/4.8/../../../arm-none-eabi/lib/armv7e-m/fpu/libg.a(lib_a-__call_atexit.o)
                                                   /usr/lib/gcc/arm-none-eabi/4.8/../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
-delay500ms                                        objdir/stm32_simple.o
+delay100ms                                        objdir/stm32_simple.o
 end                                               objdir/stm32f3_sysmem.o
 enter_standby                                     objdir/stm32_simple.o
 exit                                              /usr/lib/gcc/arm-none-eabi/4.8/../../../arm-none-eabi/lib/armv7e-m/fpu/libg.a(lib_a-exit.o)

@@ -4567,7 +4567,7 @@
  2735              		.bss
  2736              		.align	2
  2737              		.set	.LANCHOR0,. + 0
- 2740              	tick.6670:
+ 2740              	tick.6658:
  2741 0000 00000000 		.space	4
  2742              		.text
  2743              	.Letext0:
@@ -4583,52 +4583,52 @@
  2753              		.file 12 ".././hal/stm32f3/CMSIS/core/core_cm4.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 stm32f3_hal_lowlevel.c
-     /tmp/cci9yZDp.s:21     .text.HAL_GetTick:00000000 $t
-     /tmp/cci9yZDp.s:26     .text.HAL_GetTick:00000000 HAL_GetTick
-     /tmp/cci9yZDp.s:44     .text.HAL_GetTick:0000000c $d
-     /tmp/cci9yZDp.s:49     .text.HAL_RCC_GetSysClockFreq:00000000 $t
-     /tmp/cci9yZDp.s:54     .text.HAL_RCC_GetSysClockFreq:00000000 HAL_RCC_GetSysClockFreq
-     /tmp/cci9yZDp.s:68     .text.HAL_RCC_GetPCLK1Freq:00000000 $t
-     /tmp/cci9yZDp.s:73     .text.HAL_RCC_GetPCLK1Freq:00000000 HAL_RCC_GetPCLK1Freq
-     /tmp/cci9yZDp.s:87     .text.HAL_RCC_OscConfig:00000000 $t
-     /tmp/cci9yZDp.s:92     .text.HAL_RCC_OscConfig:00000000 HAL_RCC_OscConfig
-     /tmp/cci9yZDp.s:800    .text.HAL_RCC_OscConfig:000002ec $d
-     /tmp/cci9yZDp.s:806    .text.HAL_RCC_OscConfig:000002f8 $t
-     /tmp/cci9yZDp.s:1250   .text.HAL_RCC_OscConfig:000004f0 $d
-     /tmp/cci9yZDp.s:1255   .text.HAL_RCC_ClockConfig:00000000 $t
-     /tmp/cci9yZDp.s:1260   .text.HAL_RCC_ClockConfig:00000000 HAL_RCC_ClockConfig
-     /tmp/cci9yZDp.s:1534   .text.HAL_RCC_ClockConfig:0000014c $d
-     /tmp/cci9yZDp.s:1540   .text.HAL_RCC_GetPCLK2Freq:00000000 $t
-     /tmp/cci9yZDp.s:1545   .text.HAL_RCC_GetPCLK2Freq:00000000 HAL_RCC_GetPCLK2Freq
-     /tmp/cci9yZDp.s:1559   .text.HAL_GPIO_Init:00000000 $t
-     /tmp/cci9yZDp.s:1564   .text.HAL_GPIO_Init:00000000 HAL_GPIO_Init
-     /tmp/cci9yZDp.s:1836   .text.HAL_GPIO_Init:00000188 $d
-     /tmp/cci9yZDp.s:1843   .text.HAL_GPIO_WritePin:00000000 $t
-     /tmp/cci9yZDp.s:1848   .text.HAL_GPIO_WritePin:00000000 HAL_GPIO_WritePin
-     /tmp/cci9yZDp.s:1869   .text.HAL_GPIO_TogglePin:00000000 $t
-     /tmp/cci9yZDp.s:1874   .text.HAL_GPIO_TogglePin:00000000 HAL_GPIO_TogglePin
-     /tmp/cci9yZDp.s:1892   .text.UART_SetConfig:00000000 $t
-     /tmp/cci9yZDp.s:1897   .text.UART_SetConfig:00000000 UART_SetConfig
-     /tmp/cci9yZDp.s:1985   .text.UART_SetConfig:0000006e $d
-     /tmp/cci9yZDp.s:2062   .text.UART_SetConfig:000000c8 $d
-     /tmp/cci9yZDp.s:2128   .text.UART_SetConfig:00000120 $d
-     /tmp/cci9yZDp.s:2136   .text.UART_WaitOnFlagUntilTimeout:00000000 $t
-     /tmp/cci9yZDp.s:2141   .text.UART_WaitOnFlagUntilTimeout:00000000 UART_WaitOnFlagUntilTimeout
-     /tmp/cci9yZDp.s:2222   .text.UART_CheckIdleState:00000000 $t
-     /tmp/cci9yZDp.s:2227   .text.UART_CheckIdleState:00000000 UART_CheckIdleState
-     /tmp/cci9yZDp.s:2318   .text.HAL_UART_Init:00000000 $t
-     /tmp/cci9yZDp.s:2323   .text.HAL_UART_Init:00000000 HAL_UART_Init
-     /tmp/cci9yZDp.s:2390   .text.HAL_UART_Transmit:00000000 $t
-     /tmp/cci9yZDp.s:2395   .text.HAL_UART_Transmit:00000000 HAL_UART_Transmit
-     /tmp/cci9yZDp.s:2543   .text.HAL_UART_Receive:00000000 $t
-     /tmp/cci9yZDp.s:2548   .text.HAL_UART_Receive:00000000 HAL_UART_Receive
-     /tmp/cci9yZDp.s:2730   .rodata:00000000 CSWTCH.73
-     /tmp/cci9yZDp.s:2736   .bss:00000000 $d
-     /tmp/cci9yZDp.s:2740   .bss:00000000 tick.6670
+     /tmp/ccVR2tKJ.s:21     .text.HAL_GetTick:00000000 $t
+     /tmp/ccVR2tKJ.s:26     .text.HAL_GetTick:00000000 HAL_GetTick
+     /tmp/ccVR2tKJ.s:44     .text.HAL_GetTick:0000000c $d
+     /tmp/ccVR2tKJ.s:49     .text.HAL_RCC_GetSysClockFreq:00000000 $t
+     /tmp/ccVR2tKJ.s:54     .text.HAL_RCC_GetSysClockFreq:00000000 HAL_RCC_GetSysClockFreq
+     /tmp/ccVR2tKJ.s:68     .text.HAL_RCC_GetPCLK1Freq:00000000 $t
+     /tmp/ccVR2tKJ.s:73     .text.HAL_RCC_GetPCLK1Freq:00000000 HAL_RCC_GetPCLK1Freq
+     /tmp/ccVR2tKJ.s:87     .text.HAL_RCC_OscConfig:00000000 $t
+     /tmp/ccVR2tKJ.s:92     .text.HAL_RCC_OscConfig:00000000 HAL_RCC_OscConfig
+     /tmp/ccVR2tKJ.s:800    .text.HAL_RCC_OscConfig:000002ec $d
+     /tmp/ccVR2tKJ.s:806    .text.HAL_RCC_OscConfig:000002f8 $t
+     /tmp/ccVR2tKJ.s:1250   .text.HAL_RCC_OscConfig:000004f0 $d
+     /tmp/ccVR2tKJ.s:1255   .text.HAL_RCC_ClockConfig:00000000 $t
+     /tmp/ccVR2tKJ.s:1260   .text.HAL_RCC_ClockConfig:00000000 HAL_RCC_ClockConfig
+     /tmp/ccVR2tKJ.s:1534   .text.HAL_RCC_ClockConfig:0000014c $d
+     /tmp/ccVR2tKJ.s:1540   .text.HAL_RCC_GetPCLK2Freq:00000000 $t
+     /tmp/ccVR2tKJ.s:1545   .text.HAL_RCC_GetPCLK2Freq:00000000 HAL_RCC_GetPCLK2Freq
+     /tmp/ccVR2tKJ.s:1559   .text.HAL_GPIO_Init:00000000 $t
+     /tmp/ccVR2tKJ.s:1564   .text.HAL_GPIO_Init:00000000 HAL_GPIO_Init
+     /tmp/ccVR2tKJ.s:1836   .text.HAL_GPIO_Init:00000188 $d
+     /tmp/ccVR2tKJ.s:1843   .text.HAL_GPIO_WritePin:00000000 $t
+     /tmp/ccVR2tKJ.s:1848   .text.HAL_GPIO_WritePin:00000000 HAL_GPIO_WritePin
+     /tmp/ccVR2tKJ.s:1869   .text.HAL_GPIO_TogglePin:00000000 $t
+     /tmp/ccVR2tKJ.s:1874   .text.HAL_GPIO_TogglePin:00000000 HAL_GPIO_TogglePin
+     /tmp/ccVR2tKJ.s:1892   .text.UART_SetConfig:00000000 $t
+     /tmp/ccVR2tKJ.s:1897   .text.UART_SetConfig:00000000 UART_SetConfig
+     /tmp/ccVR2tKJ.s:1985   .text.UART_SetConfig:0000006e $d
+     /tmp/ccVR2tKJ.s:2062   .text.UART_SetConfig:000000c8 $d
+     /tmp/ccVR2tKJ.s:2128   .text.UART_SetConfig:00000120 $d
+     /tmp/ccVR2tKJ.s:2136   .text.UART_WaitOnFlagUntilTimeout:00000000 $t
+     /tmp/ccVR2tKJ.s:2141   .text.UART_WaitOnFlagUntilTimeout:00000000 UART_WaitOnFlagUntilTimeout
+     /tmp/ccVR2tKJ.s:2222   .text.UART_CheckIdleState:00000000 $t
+     /tmp/ccVR2tKJ.s:2227   .text.UART_CheckIdleState:00000000 UART_CheckIdleState
+     /tmp/ccVR2tKJ.s:2318   .text.HAL_UART_Init:00000000 $t
+     /tmp/ccVR2tKJ.s:2323   .text.HAL_UART_Init:00000000 HAL_UART_Init
+     /tmp/ccVR2tKJ.s:2390   .text.HAL_UART_Transmit:00000000 $t
+     /tmp/ccVR2tKJ.s:2395   .text.HAL_UART_Transmit:00000000 HAL_UART_Transmit
+     /tmp/ccVR2tKJ.s:2543   .text.HAL_UART_Receive:00000000 $t
+     /tmp/ccVR2tKJ.s:2548   .text.HAL_UART_Receive:00000000 HAL_UART_Receive
+     /tmp/ccVR2tKJ.s:2730   .rodata:00000000 CSWTCH.73
+     /tmp/ccVR2tKJ.s:2736   .bss:00000000 $d
+     /tmp/ccVR2tKJ.s:2740   .bss:00000000 tick.6658
                      .debug_frame:00000010 $d
-     /tmp/cci9yZDp.s:1994   .text.UART_SetConfig:00000077 $d
-     /tmp/cci9yZDp.s:1994   .text.UART_SetConfig:00000078 $t
-     /tmp/cci9yZDp.s:2072   .text.UART_SetConfig:000000d1 $d
-     /tmp/cci9yZDp.s:2072   .text.UART_SetConfig:000000d2 $t
+     /tmp/ccVR2tKJ.s:1994   .text.UART_SetConfig:00000077 $d
+     /tmp/ccVR2tKJ.s:1994   .text.UART_SetConfig:00000078 $t
+     /tmp/ccVR2tKJ.s:2072   .text.UART_SetConfig:000000d1 $d
+     /tmp/ccVR2tKJ.s:2072   .text.UART_SetConfig:000000d2 $t
 
 NO UNDEFINED SYMBOLS

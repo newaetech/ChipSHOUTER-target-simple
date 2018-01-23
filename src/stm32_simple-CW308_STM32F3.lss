@@ -133,12 +133,12 @@ Reset_Handler:
  800022c:	20000428 	.word	0x20000428
  8000230:	00000000 	.word	0x00000000
 
-08000234 <delay500ms>:
+08000234 <delay100ms>:
+	}
+}
 
-#define BLINK_TOT 3
-#define BLINK_PERIOD 500000
 
-void delay500ms(int s)
+void delay100ms(uint32_t s)
 {
  8000234:	b082      	sub	sp, #8
 	volatile uint32_t blink_time = 0;
@@ -150,215 +150,214 @@ void delay500ms(int s)
  800023c:	9301      	str	r3, [sp, #4]
  800023e:	9b01      	ldr	r3, [sp, #4]
  8000240:	4283      	cmp	r3, r0
- 8000242:	d20b      	bcs.n	800025c <delay500ms+0x28>
+ 8000242:	d20b      	bcs.n	800025c <delay100ms+0x28>
 		for (blink_time = 0; blink_time < BLINK_PERIOD; blink_time++);
  8000244:	2300      	movs	r3, #0
  8000246:	9300      	str	r3, [sp, #0]
  8000248:	9a00      	ldr	r2, [sp, #0]
- 800024a:	4b05      	ldr	r3, [pc, #20]	; (8000260 <delay500ms+0x2c>)
+ 800024a:	4b05      	ldr	r3, [pc, #20]	; (8000260 <delay100ms+0x2c>)
  800024c:	429a      	cmp	r2, r3
- 800024e:	d802      	bhi.n	8000256 <delay500ms+0x22>
+ 800024e:	d802      	bhi.n	8000256 <delay100ms+0x22>
  8000250:	9b00      	ldr	r3, [sp, #0]
  8000252:	3301      	adds	r3, #1
- 8000254:	e7f7      	b.n	8000246 <delay500ms+0x12>
+ 8000254:	e7f7      	b.n	8000246 <delay100ms+0x12>
 
-void delay500ms(int s)
+void delay100ms(uint32_t s)
 {
 	volatile uint32_t blink_time = 0;
 	volatile uint32_t blink_num = 0;
 	for (blink_num = 0; blink_num < s; blink_num++)
  8000256:	9b01      	ldr	r3, [sp, #4]
  8000258:	3301      	adds	r3, #1
- 800025a:	e7ef      	b.n	800023c <delay500ms+0x8>
+ 800025a:	e7ef      	b.n	800023c <delay100ms+0x8>
 		for (blink_time = 0; blink_time < BLINK_PERIOD; blink_time++);
 }
  800025c:	b002      	add	sp, #8
  800025e:	4770      	bx	lr
- 8000260:	0007a11f 	.word	0x0007a11f
+ 8000260:	000101cf 	.word	0x000101cf
 
 08000264 <glitch>:
 
-#define OUTER_LOOP_CNT 100
-#define INNER_LOOP_CNT 5000
+//startup_blink() constants
+#define BLINK_TOT 3
 
 void glitch(void)
 {
  8000264:	b57f      	push	{r0, r1, r2, r3, r4, r5, r6, lr}
 	volatile uint32_t i, j;
-    volatile uint32_t cnt;
-    
-    volatile uint32_t run_cnt = 0;
+	volatile uint32_t cnt;
+	
+	volatile uint32_t run_cnt = 0;
  8000266:	2300      	movs	r3, #0
  8000268:	9304      	str	r3, [sp, #16]
-    volatile uint32_t glitch_cnt = 0;
+	volatile uint32_t glitch_cnt = 0;
  800026a:	9305      	str	r3, [sp, #20]
-    for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
+	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
  800026c:	9304      	str	r3, [sp, #16]
  800026e:	9b04      	ldr	r3, [sp, #16]
- 8000270:	2bf9      	cmp	r3, #249	; 0xf9
- 8000272:	d85d      	bhi.n	8000330 <glitch+0xcc>
+ 8000270:	f5b3 7f96 	cmp.w	r3, #300	; 0x12c
+ 8000274:	d25d      	bcs.n	8000332 <glitch+0xce>
 		//run led on
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
- 8000274:	4830      	ldr	r0, [pc, #192]	; (8000338 <glitch+0xd4>)
- 8000276:	2110      	movs	r1, #16
- 8000278:	2201      	movs	r2, #1
- 800027a:	f000 fc27 	bl	8000acc <HAL_GPIO_WritePin>
-        for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
- 800027e:	2300      	movs	r3, #0
- 8000280:	9301      	str	r3, [sp, #4]
- 8000282:	9303      	str	r3, [sp, #12]
- 8000284:	9b01      	ldr	r3, [sp, #4]
- 8000286:	2b09      	cmp	r3, #9
- 8000288:	d810      	bhi.n	80002ac <glitch+0x48>
-            for(j=0; j<INNER_LOOP_CNT; j++) {
- 800028a:	2300      	movs	r3, #0
- 800028c:	9302      	str	r3, [sp, #8]
- 800028e:	9a02      	ldr	r2, [sp, #8]
- 8000290:	f241 3387 	movw	r3, #4999	; 0x1387
- 8000294:	429a      	cmp	r2, r3
- 8000296:	d805      	bhi.n	80002a4 <glitch+0x40>
-                cnt++;
- 8000298:	9b03      	ldr	r3, [sp, #12]
- 800029a:	3301      	adds	r3, #1
- 800029c:	9303      	str	r3, [sp, #12]
-    volatile uint32_t glitch_cnt = 0;
-    for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
+ 8000276:	4830      	ldr	r0, [pc, #192]	; (8000338 <glitch+0xd4>)
+ 8000278:	2110      	movs	r1, #16
+ 800027a:	2201      	movs	r2, #1
+ 800027c:	f000 fc26 	bl	8000acc <HAL_GPIO_WritePin>
+		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
+ 8000280:	2300      	movs	r3, #0
+ 8000282:	9301      	str	r3, [sp, #4]
+ 8000284:	9303      	str	r3, [sp, #12]
+ 8000286:	9b01      	ldr	r3, [sp, #4]
+ 8000288:	2b09      	cmp	r3, #9
+ 800028a:	d810      	bhi.n	80002ae <glitch+0x4a>
+			for(j=0; j<INNER_LOOP_CNT; j++) {
+ 800028c:	2300      	movs	r3, #0
+ 800028e:	9302      	str	r3, [sp, #8]
+ 8000290:	9a02      	ldr	r2, [sp, #8]
+ 8000292:	f241 3387 	movw	r3, #4999	; 0x1387
+ 8000296:	429a      	cmp	r2, r3
+ 8000298:	d805      	bhi.n	80002a6 <glitch+0x42>
+				cnt++;
+ 800029a:	9b03      	ldr	r3, [sp, #12]
+ 800029c:	3301      	adds	r3, #1
+ 800029e:	9303      	str	r3, [sp, #12]
+	volatile uint32_t glitch_cnt = 0;
+	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
 		//run led on
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
-        for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
-            for(j=0; j<INNER_LOOP_CNT; j++) {
- 800029e:	9b02      	ldr	r3, [sp, #8]
- 80002a0:	3301      	adds	r3, #1
- 80002a2:	e7f3      	b.n	800028c <glitch+0x28>
-    volatile uint32_t run_cnt = 0;
-    volatile uint32_t glitch_cnt = 0;
-    for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
+		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
+			for(j=0; j<INNER_LOOP_CNT; j++) {
+ 80002a0:	9b02      	ldr	r3, [sp, #8]
+ 80002a2:	3301      	adds	r3, #1
+ 80002a4:	e7f3      	b.n	800028e <glitch+0x2a>
+	volatile uint32_t run_cnt = 0;
+	volatile uint32_t glitch_cnt = 0;
+	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
 		//run led on
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
-        for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
- 80002a4:	9b01      	ldr	r3, [sp, #4]
- 80002a6:	3301      	adds	r3, #1
- 80002a8:	9301      	str	r3, [sp, #4]
- 80002aa:	e7eb      	b.n	8000284 <glitch+0x20>
-                cnt++;
-            }
-        }
-        
-        //run led off
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
- 80002ac:	4822      	ldr	r0, [pc, #136]	; (8000338 <glitch+0xd4>)
- 80002ae:	2110      	movs	r1, #16
- 80002b0:	2200      	movs	r2, #0
- 80002b2:	f000 fc0b 	bl	8000acc <HAL_GPIO_WritePin>
-        for(; i < OUTER_LOOP_CNT; i++) {
- 80002b6:	9b01      	ldr	r3, [sp, #4]
- 80002b8:	2b63      	cmp	r3, #99	; 0x63
- 80002ba:	d810      	bhi.n	80002de <glitch+0x7a>
-            for(j=0; j < INNER_LOOP_CNT; j++){
- 80002bc:	2300      	movs	r3, #0
- 80002be:	9302      	str	r3, [sp, #8]
- 80002c0:	9a02      	ldr	r2, [sp, #8]
- 80002c2:	f241 3387 	movw	r3, #4999	; 0x1387
- 80002c6:	429a      	cmp	r2, r3
- 80002c8:	d805      	bhi.n	80002d6 <glitch+0x72>
-                cnt++;
- 80002ca:	9b03      	ldr	r3, [sp, #12]
- 80002cc:	3301      	adds	r3, #1
- 80002ce:	9303      	str	r3, [sp, #12]
-        }
-        
-        //run led off
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
-        for(; i < OUTER_LOOP_CNT; i++) {
-            for(j=0; j < INNER_LOOP_CNT; j++){
- 80002d0:	9b02      	ldr	r3, [sp, #8]
- 80002d2:	3301      	adds	r3, #1
- 80002d4:	e7f3      	b.n	80002be <glitch+0x5a>
-            }
-        }
-        
-        //run led off
-        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
-        for(; i < OUTER_LOOP_CNT; i++) {
- 80002d6:	9b01      	ldr	r3, [sp, #4]
- 80002d8:	3301      	adds	r3, #1
- 80002da:	9301      	str	r3, [sp, #4]
- 80002dc:	e7eb      	b.n	80002b6 <glitch+0x52>
-                cnt++;
-            }
-        }
-        
-        //look for glitch
-        if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
- 80002de:	9b01      	ldr	r3, [sp, #4]
- 80002e0:	2b64      	cmp	r3, #100	; 0x64
- 80002e2:	d108      	bne.n	80002f6 <glitch+0x92>
- 80002e4:	9a02      	ldr	r2, [sp, #8]
- 80002e6:	f241 3388 	movw	r3, #5000	; 0x1388
- 80002ea:	429a      	cmp	r2, r3
- 80002ec:	d103      	bne.n	80002f6 <glitch+0x92>
- 80002ee:	9a03      	ldr	r2, [sp, #12]
- 80002f0:	4b12      	ldr	r3, [pc, #72]	; (800033c <glitch+0xd8>)
- 80002f2:	429a      	cmp	r2, r3
- 80002f4:	d019      	beq.n	800032a <glitch+0xc6>
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
+		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
+ 80002a6:	9b01      	ldr	r3, [sp, #4]
+ 80002a8:	3301      	adds	r3, #1
+ 80002aa:	9301      	str	r3, [sp, #4]
+ 80002ac:	e7eb      	b.n	8000286 <glitch+0x22>
+				cnt++;
+			}
+		}
+		
+		//run led off
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
+ 80002ae:	4822      	ldr	r0, [pc, #136]	; (8000338 <glitch+0xd4>)
+ 80002b0:	2110      	movs	r1, #16
+ 80002b2:	2200      	movs	r2, #0
+ 80002b4:	f000 fc0a 	bl	8000acc <HAL_GPIO_WritePin>
+		for(; i < OUTER_LOOP_CNT; i++) {
+ 80002b8:	9b01      	ldr	r3, [sp, #4]
+ 80002ba:	2b63      	cmp	r3, #99	; 0x63
+ 80002bc:	d810      	bhi.n	80002e0 <glitch+0x7c>
+			for(j=0; j < INNER_LOOP_CNT; j++){
+ 80002be:	2300      	movs	r3, #0
+ 80002c0:	9302      	str	r3, [sp, #8]
+ 80002c2:	9a02      	ldr	r2, [sp, #8]
+ 80002c4:	f241 3387 	movw	r3, #4999	; 0x1387
+ 80002c8:	429a      	cmp	r2, r3
+ 80002ca:	d805      	bhi.n	80002d8 <glitch+0x74>
+				cnt++;
+ 80002cc:	9b03      	ldr	r3, [sp, #12]
+ 80002ce:	3301      	adds	r3, #1
+ 80002d0:	9303      	str	r3, [sp, #12]
+		}
+		
+		//run led off
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
+		for(; i < OUTER_LOOP_CNT; i++) {
+			for(j=0; j < INNER_LOOP_CNT; j++){
+ 80002d2:	9b02      	ldr	r3, [sp, #8]
+ 80002d4:	3301      	adds	r3, #1
+ 80002d6:	e7f3      	b.n	80002c0 <glitch+0x5c>
+			}
+		}
+		
+		//run led off
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
+		for(; i < OUTER_LOOP_CNT; i++) {
+ 80002d8:	9b01      	ldr	r3, [sp, #4]
+ 80002da:	3301      	adds	r3, #1
+ 80002dc:	9301      	str	r3, [sp, #4]
+ 80002de:	e7eb      	b.n	80002b8 <glitch+0x54>
+				cnt++;
+			}
+		}
+		
+		//look for glitch
+		if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
+ 80002e0:	9b01      	ldr	r3, [sp, #4]
+ 80002e2:	2b64      	cmp	r3, #100	; 0x64
+ 80002e4:	d108      	bne.n	80002f8 <glitch+0x94>
+ 80002e6:	9a02      	ldr	r2, [sp, #8]
+ 80002e8:	f241 3388 	movw	r3, #5000	; 0x1388
+ 80002ec:	429a      	cmp	r2, r3
+ 80002ee:	d103      	bne.n	80002f8 <glitch+0x94>
+ 80002f0:	9a03      	ldr	r2, [sp, #12]
+ 80002f2:	4b12      	ldr	r3, [pc, #72]	; (800033c <glitch+0xd8>)
+ 80002f4:	429a      	cmp	r2, r3
+ 80002f6:	d019      	beq.n	800032c <glitch+0xc8>
 			//if glitched, reset the run count and blink the fault LED a few times
 			for (glitch_cnt = 0; glitch_cnt < GLITCH_CNT; glitch_cnt++) {
- 80002f6:	2300      	movs	r3, #0
- 80002f8:	9305      	str	r3, [sp, #20]
- 80002fa:	9b05      	ldr	r3, [sp, #20]
- 80002fc:	2b02      	cmp	r3, #2
- 80002fe:	d812      	bhi.n	8000326 <glitch+0xc2>
+ 80002f8:	2300      	movs	r3, #0
+ 80002fa:	9305      	str	r3, [sp, #20]
+ 80002fc:	9b05      	ldr	r3, [sp, #20]
+ 80002fe:	2b02      	cmp	r3, #2
+ 8000300:	d812      	bhi.n	8000328 <glitch+0xc4>
 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
- 8000300:	2108      	movs	r1, #8
- 8000302:	2201      	movs	r2, #1
- 8000304:	480c      	ldr	r0, [pc, #48]	; (8000338 <glitch+0xd4>)
- 8000306:	f000 fbe1 	bl	8000acc <HAL_GPIO_WritePin>
-				delay500ms(1);
- 800030a:	2001      	movs	r0, #1
- 800030c:	f7ff ff92 	bl	8000234 <delay500ms>
+ 8000302:	2108      	movs	r1, #8
+ 8000304:	2201      	movs	r2, #1
+ 8000306:	480c      	ldr	r0, [pc, #48]	; (8000338 <glitch+0xd4>)
+ 8000308:	f000 fbe0 	bl	8000acc <HAL_GPIO_WritePin>
+				delay100ms(5);
+ 800030c:	2005      	movs	r0, #5
+ 800030e:	f7ff ff91 	bl	8000234 <delay100ms>
 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
- 8000310:	4809      	ldr	r0, [pc, #36]	; (8000338 <glitch+0xd4>)
- 8000312:	2108      	movs	r1, #8
- 8000314:	2200      	movs	r2, #0
- 8000316:	f000 fbd9 	bl	8000acc <HAL_GPIO_WritePin>
-				delay500ms(1);
- 800031a:	2001      	movs	r0, #1
- 800031c:	f7ff ff8a 	bl	8000234 <delay500ms>
-        }
-        
-        //look for glitch
-        if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
+ 8000312:	4809      	ldr	r0, [pc, #36]	; (8000338 <glitch+0xd4>)
+ 8000314:	2108      	movs	r1, #8
+ 8000316:	2200      	movs	r2, #0
+ 8000318:	f000 fbd8 	bl	8000acc <HAL_GPIO_WritePin>
+				delay100ms(5);
+ 800031c:	2005      	movs	r0, #5
+ 800031e:	f7ff ff89 	bl	8000234 <delay100ms>
+		}
+		
+		//look for glitch
+		if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
 			//if glitched, reset the run count and blink the fault LED a few times
 			for (glitch_cnt = 0; glitch_cnt < GLITCH_CNT; glitch_cnt++) {
- 8000320:	9b05      	ldr	r3, [sp, #20]
- 8000322:	3301      	adds	r3, #1
- 8000324:	e7e8      	b.n	80002f8 <glitch+0x94>
-				delay500ms(1);
+ 8000322:	9b05      	ldr	r3, [sp, #20]
+ 8000324:	3301      	adds	r3, #1
+ 8000326:	e7e8      	b.n	80002fa <glitch+0x96>
+				delay100ms(5);
 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
-				delay500ms(1);
+				delay100ms(5);
 			}
 			
 			run_cnt = 0;
- 8000326:	2300      	movs	r3, #0
- 8000328:	9304      	str	r3, [sp, #16]
+ 8000328:	2300      	movs	r3, #0
+ 800032a:	9304      	str	r3, [sp, #16]
 	volatile uint32_t i, j;
-    volatile uint32_t cnt;
-    
-    volatile uint32_t run_cnt = 0;
-    volatile uint32_t glitch_cnt = 0;
-    for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
- 800032a:	9b04      	ldr	r3, [sp, #16]
- 800032c:	3301      	adds	r3, #1
- 800032e:	e79d      	b.n	800026c <glitch+0x8>
+	volatile uint32_t cnt;
+	
+	volatile uint32_t run_cnt = 0;
+	volatile uint32_t glitch_cnt = 0;
+	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
+ 800032c:	9b04      	ldr	r3, [sp, #16]
+ 800032e:	3301      	adds	r3, #1
+ 8000330:	e79c      	b.n	800026c <glitch+0x8>
 			}
 			
 			run_cnt = 0;
 		}
 	}
 }
- 8000330:	b007      	add	sp, #28
- 8000332:	f85d fb04 	ldr.w	pc, [sp], #4
- 8000336:	bf00      	nop
+ 8000332:	b007      	add	sp, #28
+ 8000334:	f85d fb04 	ldr.w	pc, [sp], #4
  8000338:	48000400 	.word	0x48000400
  800033c:	0007a120 	.word	0x0007a120
 
@@ -387,17 +386,17 @@ void startup_blink(void)
  8000358:	2201      	movs	r2, #1
  800035a:	480a      	ldr	r0, [pc, #40]	; (8000384 <startup_blink+0x44>)
  800035c:	f000 fbb6 	bl	8000acc <HAL_GPIO_WritePin>
-		delay500ms(1);
- 8000360:	2001      	movs	r0, #1
- 8000362:	f7ff ff67 	bl	8000234 <delay500ms>
+		delay100ms(5);
+ 8000360:	2005      	movs	r0, #5
+ 8000362:	f7ff ff67 	bl	8000234 <delay100ms>
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, RESET);
  8000366:	4807      	ldr	r0, [pc, #28]	; (8000384 <startup_blink+0x44>)
  8000368:	2120      	movs	r1, #32
  800036a:	2200      	movs	r2, #0
  800036c:	f000 fbae 	bl	8000acc <HAL_GPIO_WritePin>
-		delay500ms(1);
- 8000370:	2001      	movs	r0, #1
- 8000372:	f7ff ff5f 	bl	8000234 <delay500ms>
+		delay100ms(5);
+ 8000370:	2005      	movs	r0, #5
+ 8000372:	f7ff ff5f 	bl	8000234 <delay100ms>
 
 void startup_blink(void)
 {
@@ -407,9 +406,9 @@ void startup_blink(void)
  8000376:	9b01      	ldr	r3, [sp, #4]
  8000378:	3301      	adds	r3, #1
  800037a:	e7e8      	b.n	800034e <startup_blink+0xe>
-		delay500ms(1);
+		delay100ms(5);
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, RESET);
-		delay500ms(1);
+		delay100ms(5);
 	}
 	
 }
@@ -486,7 +485,6 @@ void power_setup(void)
  80003bc:	9b01      	ldr	r3, [sp, #4]
 	HAL_PWR_EnableBkUpAccess();
  80003be:	f000 fb8b 	bl	8000ad8 <HAL_PWR_EnableBkUpAccess>
-	
 }
  80003c2:	b003      	add	sp, #12
  80003c4:	f85d fb04 	ldr.w	pc, [sp], #4
@@ -506,7 +504,7 @@ void init_GPIOB(void)
 	GpioInit.Speed     = GPIO_SPEED_HIGH;
 	HAL_GPIO_Init(GPIOB, &GpioInit);
  80003d0:	480c      	ldr	r0, [pc, #48]	; (8000404 <init_GPIOB+0x38>)
-	
+	HAL_PWR_EnableBkUpAccess();
 }
 
 void init_GPIOB(void)
@@ -581,9 +579,11 @@ int main(void)
 	
 	startup_blink();
  8000424:	f7ff ff8c 	bl	8000340 <startup_blink>
+	//enter glitch loop
 	glitch();
  8000428:	f7ff ff1c 	bl	8000264 <glitch>
-	//check standby mode
+	
+	//enter standby mode
 	enter_standby();
  800042c:	f7ff ffec 	bl	8000408 <enter_standby>
  8000430:	e7fe      	b.n	8000430 <main+0x1a>

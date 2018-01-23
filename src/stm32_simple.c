@@ -21,10 +21,10 @@
 #include <stdlib.h>
 
 volatile uint8_t glitched = 0;
-void delay500ms(int s);
+void delay100ms(uint32_t s);
 
 //glitch() constants
-#define RUN_CNT 250
+#define RUN_CNT 300
 #define GLITCH_CNT 3
 #define LED_DUTY_CYCLE 10
 
@@ -32,8 +32,10 @@ void delay500ms(int s);
 #define INNER_LOOP_CNT 5000
 
 //delay500ms() constants
+#define BLINK_PERIOD 66000
+
+//startup_blink() constants
 #define BLINK_TOT 3
-#define BLINK_PERIOD 500000
 
 void glitch(void)
 {
@@ -64,9 +66,9 @@ void glitch(void)
 			//if glitched, reset the run count and blink the fault LED a few times
 			for (glitch_cnt = 0; glitch_cnt < GLITCH_CNT; glitch_cnt++) {
 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
-				delay500ms(1);
+				delay100ms(5);
 				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
-				delay500ms(1);
+				delay100ms(5);
 			}
 			
 			run_cnt = 0;
@@ -75,7 +77,7 @@ void glitch(void)
 }
 
 
-void delay500ms(int s)
+void delay100ms(uint32_t s)
 {
 	volatile uint32_t blink_time = 0;
 	volatile uint32_t blink_num = 0;
@@ -90,9 +92,9 @@ void startup_blink(void)
 	volatile uint32_t blink_num;
 	for (blink_num = 0; blink_num < BLINK_TOT; blink_num++) {
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, SET);
-		delay500ms(1);
+		delay100ms(5);
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, RESET);
-		delay500ms(1);
+		delay100ms(5);
 	}
 	
 }
@@ -139,8 +141,10 @@ int main(void)
 	init_GPIOB();
 	
 	startup_blink();
+	//enter glitch loop
 	glitch();
-	//check standby mode
+	
+	//enter standby mode
 	enter_standby();
 	
 	while(1);

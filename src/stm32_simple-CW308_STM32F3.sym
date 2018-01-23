@@ -18,7 +18,7 @@
 080001ac t register_tm_clones
 080001d8 t __do_global_dtors_aux
 08000200 t frame_dummy
-08000234 T delay500ms
+08000234 T delay100ms
 08000264 T glitch
 08000340 T startup_blink
 08000388 T osc_setup
@@ -79,7 +79,7 @@
 20000428 B _sbss
 20000428 D __TMC_END__
 2000042c b object.6155
-20000444 b tick.6670
+20000444 b tick.6658
 20000448 b __bss_end__
 20000448 B _ebss
 20000448 b end
