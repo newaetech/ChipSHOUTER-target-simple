@@ -23,21 +23,12 @@
 volatile uint8_t glitched = 0;
 void delay100ms(uint32_t s);
 
-//clock constants
-#define DIV_HSI_512 1
-
 //glitch() constants
-#define RUN_CNT 300
+#define RUN_CNT 2000
 #define GLITCH_CNT 3
-#define LED_DUTY_CYCLE 10
 
-#define OUTER_LOOP_CNT 100
-
-#ifdef DIV_HSI_512
-#define INNER_LOOP_CNT 9
-#else
-#define INNER_LOOP_CNT 5000
-#endif
+#define OUTER_LOOP_CNT 300
+#define INNER_LOOP_CNT 300
 
 //delay500ms() constants
 #ifdef DIV_HSI_512
@@ -47,27 +38,22 @@ void delay100ms(uint32_t s);
 #endif
 
 //startup_blink() constants
-#define BLINK_TOT 3
+#define BLINK_TOT 3    
 
 void glitch(void)
 {
 	volatile uint32_t i, j;
 	volatile uint32_t cnt;
+    uint32_t blink_status = 1;
 	
-	volatile uint32_t run_cnt = 0;
-	volatile uint32_t glitch_cnt = 0;
+	uint32_t run_cnt = 0;
+	uint32_t glitch_cnt = 0;
 	for(run_cnt = 0; run_cnt < RUN_CNT; run_cnt++){
 		//run led on
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, SET);
-		for(i = 0, cnt = 0; i < LED_DUTY_CYCLE; i++){
-			for(j=0; j<INNER_LOOP_CNT; j++) {
-				cnt++;
-			}
-		}
-		
-		//run led off
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, RESET);
-		for(; i < OUTER_LOOP_CNT; i++) {
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, blink_status);
+        blink_status ^= 1;
+        cnt = 0;
+		for(i = 0; i < OUTER_LOOP_CNT; i++) {
 			for(j=0; j < INNER_LOOP_CNT; j++){
 				cnt++;
 			}
@@ -75,15 +61,11 @@ void glitch(void)
 		
 		//look for glitch
 		if (i != OUTER_LOOP_CNT || j != INNER_LOOP_CNT || cnt != (OUTER_LOOP_CNT * INNER_LOOP_CNT)) {
-			//if glitched, reset the run count and blink the fault LED a few times
-			for (glitch_cnt = 0; glitch_cnt < GLITCH_CNT; glitch_cnt++) {
-				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
-				delay100ms(5);
-				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
-				delay100ms(5);
-			}
-			
-			run_cnt = 0;
+			//if glitched, reset the run count and blink the fault LED
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, SET);
+			delay100ms(3);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, RESET);
+            run_cnt = 0;
 		}
 	}
 }
@@ -102,11 +84,11 @@ void startup_blink(void)
 {
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4 | GPIO_PIN_5, RESET);
 	volatile uint32_t blink_num;
-	for (blink_num = 0; blink_num < BLINK_TOT; blink_num++) {
+	for (blink_num = 0; blink_num < 1; blink_num++) {
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, SET);
-		delay100ms(5);
+		delay100ms(1);
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, RESET);
-		delay100ms(5);
+		delay100ms(1);
 	}
 	
 }
@@ -116,12 +98,15 @@ void osc_setup(void)
 {
 	RCC_OscInitTypeDef RCC_OscInitStruct;
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSI;
-	RCC_OscInitStruct.HSEState       = RCC_HSE_OFF;
-	RCC_OscInitStruct.HSIState       = RCC_HSI_ON;
+	RCC_OscInitStruct.HSEState       = RCC_HSE_ON;
+	RCC_OscInitStruct.HSIState       = RCC_HSI_OFF;
 	RCC_OscInitStruct.PLL.PLLSource  = RCC_PLL_NONE;
 	RCC_OscInitStruct.LSIState		 = RCC_LSI_OFF;
 	HAL_RCC_OscConfig(&RCC_OscInitStruct);
 	
+/*
+    Previous code had option for slower clock - this does not work well for 
+    actually inserting the clock itself.
 	#ifdef DIV_HSI_512
 	//can't use LSI as system clock, but can divide HSI clock
 	RCC_ClkInitTypeDef clk;
@@ -131,6 +116,7 @@ void osc_setup(void)
 	uint32_t flash_latency = 5;
 	HAL_RCC_ClockConfig(&clk, flash_latency);
 	#endif
+*/
 }
 
 void power_setup(void)
