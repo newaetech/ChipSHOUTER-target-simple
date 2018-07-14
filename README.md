@@ -1,1 +1,1 @@
-Firmware for the Simple Target board. The board uses the STM32F303K8T6.
+The ChipSHOUTER simple target is a basic target with the STM32F303K8T6.
